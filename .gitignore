@@ -1,0 +1,5 @@
+build/
+.cache/
+src/main/c/frontend/lexical-analysis/FlexScanner.c
+src/main/c/frontend/syntactic-analysis/BisonParser.c
+src/main/c/frontend/syntactic-analysis/BisonParser.h
