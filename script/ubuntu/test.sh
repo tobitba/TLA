@@ -4,7 +4,7 @@ set -u
 
 DIR="$(dirname "$(readlink -f "$0")")"
 BASE_PATH="$DIR/../.."
-cd "$BASE_PATH"
+cd "$BASE_PATH" || exit
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -14,8 +14,8 @@ STATUS=0
 echo "Compiler should accept..."
 echo ""
 
-for test in $(ls src/test/c/accept/); do
-	cat "src/test/c/accept/$test" | build/Compiler >/dev/null 2>&1
+for test in src/test/c/accept/*; do
+	build/Compiler >/dev/null 2>&1 <"$test"
 	RESULT="$?"
 	if [ "$RESULT" == "0" ]; then
 		echo -e "    $test, ${GREEN}and it does${OFF} (status $RESULT)"
@@ -29,8 +29,8 @@ echo ""
 echo "Compiler should reject..."
 echo ""
 
-for test in $(ls src/test/c/reject/); do
-	cat "src/test/c/reject/$test" | build/Compiler >/dev/null 2>&1
+for test in src/test/c/reject/*; do
+	build/Compiler >/dev/null 2>&1 <"$test"
 	RESULT="$?"
 	if [ "$RESULT" != "0" ]; then
 		echo -e "    $test, ${GREEN}and it does${OFF} (status $RESULT)"
