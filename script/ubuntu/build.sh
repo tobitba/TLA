@@ -10,7 +10,7 @@ rm --force "$BASE_PATH/src/main/c/frontend/lexical-analysis/FlexScanner.c"
 rm --force "$BASE_PATH/src/main/c/frontend/syntactic-analysis/BisonParser.c"
 rm --force "$BASE_PATH/src/main/c/frontend/syntactic-analysis/BisonParser.h"
 
-cmake -S . -B build
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B build
 cd build
 make
 cd ..
