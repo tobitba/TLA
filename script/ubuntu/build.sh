@@ -2,7 +2,8 @@
 
 set -euxo pipefail
 
-BASE_PATH="$(dirname "$0")/../.."
+DIR="$(dirname "$(readlink -f "$0")")"
+BASE_PATH="$DIR/../.."
 cd "$BASE_PATH"
 
 rm --force --recursive "$BASE_PATH/build"

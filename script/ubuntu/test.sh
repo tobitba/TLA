@@ -2,7 +2,8 @@
 
 set -u
 
-BASE_PATH="$(dirname "$0")/../.."
+DIR="$(dirname "$(readlink -f "$0")")"
+BASE_PATH="$DIR/../.."
 cd "$BASE_PATH"
 
 GREEN='\033[0;32m'

@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-BASE_PATH="$(dirname "$0")/../.."
+DIR="$(dirname "$(readlink -f "$0")")"
+BASE_PATH="$DIR/../.."
 cd "$BASE_PATH"
 
 INPUT="$1"
