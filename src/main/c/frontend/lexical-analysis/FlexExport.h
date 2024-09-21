@@ -7,7 +7,7 @@
  * condition).
  */
 unsigned int flexCurrentContext(void) {
-	return YY_START;
+  return YY_START;
 }
 
 #endif

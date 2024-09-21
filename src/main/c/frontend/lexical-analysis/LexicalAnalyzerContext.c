@@ -19,26 +19,26 @@ extern int yylineno;
 extern union SemanticValue yylval;
 
 // The current lexeme (provided by Flex).
-extern char * yytext;
+extern char* yytext;
 
 /* PUBLIC FUNCTIONS */
 
-LexicalAnalyzerContext * createLexicalAnalyzerContext() {
-	LexicalAnalyzerContext * lexicalAnalyzerContext = calloc(1, sizeof(LexicalAnalyzerContext));
-	lexicalAnalyzerContext->length = yyleng;
-	lexicalAnalyzerContext->lexeme = calloc(1 + yyleng, sizeof(char));
-	lexicalAnalyzerContext->line = yylineno;
-	lexicalAnalyzerContext->semanticValue = &yylval;
-	lexicalAnalyzerContext->currentContext = flexCurrentContext();
-	strncpy(lexicalAnalyzerContext->lexeme, yytext, yyleng);
-	return lexicalAnalyzerContext;
+LexicalAnalyzerContext* createLexicalAnalyzerContext() {
+  LexicalAnalyzerContext* lexicalAnalyzerContext = calloc(1, sizeof(LexicalAnalyzerContext));
+  lexicalAnalyzerContext->length = yyleng;
+  lexicalAnalyzerContext->lexeme = calloc(1 + yyleng, sizeof(char));
+  lexicalAnalyzerContext->line = yylineno;
+  lexicalAnalyzerContext->semanticValue = &yylval;
+  lexicalAnalyzerContext->currentContext = flexCurrentContext();
+  strncpy(lexicalAnalyzerContext->lexeme, yytext, yyleng);
+  return lexicalAnalyzerContext;
 }
 
-void destroyLexicalAnalyzerContext(LexicalAnalyzerContext * lexicalAnalyzerContext) {
-	if (lexicalAnalyzerContext != NULL) {
-		if (lexicalAnalyzerContext->lexeme != NULL) {
-			free(lexicalAnalyzerContext->lexeme);
-		}
-		free(lexicalAnalyzerContext);
-	}
+void destroyLexicalAnalyzerContext(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  if (lexicalAnalyzerContext != NULL) {
+    if (lexicalAnalyzerContext->lexeme != NULL) {
+      free(lexicalAnalyzerContext->lexeme);
+    }
+    free(lexicalAnalyzerContext);
+  }
 }
