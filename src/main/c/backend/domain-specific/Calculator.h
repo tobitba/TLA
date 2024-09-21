@@ -7,7 +7,6 @@
  * domain-specific models or DTOs (Data Transfer Objects).
  */
 #include "../../frontend/syntactic-analysis/AbstractSyntaxTree.h"
-#include "../../shared/Logger.h"
 #include "../../shared/Type.h"
 #include <limits.h>
 

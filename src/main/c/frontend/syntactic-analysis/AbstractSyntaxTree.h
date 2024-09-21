@@ -1,9 +1,6 @@
 #ifndef ABSTRACT_SYNTAX_TREE_HEADER
 #define ABSTRACT_SYNTAX_TREE_HEADER
 
-#include "../../shared/Logger.h"
-#include <stdlib.h>
-
 /** Initialize module's internal state. */
 void initializeAbstractSyntaxTreeModule();
 

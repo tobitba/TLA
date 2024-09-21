@@ -1,4 +1,7 @@
 #include "AbstractSyntaxTree.h"
+#include "/home/franco/OneDrive/itba/TLA/tp/TP-TLA/src/main/c/shared/Logger.h"
+#include <stddef.h>
+#include <stdlib.h>
 
 /* MODULE INTERNAL STATE */
 

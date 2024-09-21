@@ -1,11 +1,7 @@
 #ifndef LOGGER_HEADER
 #define LOGGER_HEADER
 
-#include "Environment.h"
-#include "String.h"
 #include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 /**
  * Platform dependent macros.

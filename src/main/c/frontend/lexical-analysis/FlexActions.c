@@ -1,4 +1,12 @@
 #include "FlexActions.h"
+#include "../../shared/Environment.h"
+#include "../../shared/Logger.h"
+#include "../../shared/String.h"
+#include "../../shared/Type.h"
+#include "../syntactic-analysis/BisonParser.h"
+#include "LexicalAnalyzerContext.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 /* MODULE INTERNAL STATE */
 

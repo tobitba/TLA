@@ -1,6 +1,9 @@
 %{
 
+#include <stdint.h>
 #include "FlexActions.h"
+#include "LexicalAnalyzerContext.h"
+#include "../syntactic-analysis/BisonParser.h"
 
 %}
 

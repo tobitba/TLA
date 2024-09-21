@@ -2,7 +2,6 @@
 #define SYNTACTIC_ANALYZER_HEADER
 
 #include "../../shared/CompilerState.h"
-#include "../../shared/Logger.h"
 
 /** Bison imported functions. */
 

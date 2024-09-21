@@ -1,9 +1,6 @@
 #ifndef LEXICAL_ANALYZER_CONTEXT_HEADER
 #define LEXICAL_ANALYZER_CONTEXT_HEADER
 
-#include <stdlib.h>
-#include <string.h>
-
 /**
  * The state of a lexical-analyzer context.
  */

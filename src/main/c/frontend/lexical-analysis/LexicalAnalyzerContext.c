@@ -1,4 +1,6 @@
 #include "LexicalAnalyzerContext.h"
+#include <stdlib.h>
+#include <string.h>
 
 /**
  * Flex exported variables and functions.

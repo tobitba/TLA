@@ -2,8 +2,6 @@
 #define ENVIRONMENT_HEADER
 
 #include "Type.h"
-#include <stdlib.h>
-#include <string.h>
 
 /**
  * Analog to "getStringOrDefault", but returning true if the string is exactly

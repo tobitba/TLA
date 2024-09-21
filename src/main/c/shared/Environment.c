@@ -1,4 +1,7 @@
 #include "Environment.h"
+#include "Type.h"
+#include <stdlib.h>
+#include <string.h>
 
 /* PUBLIC FUNCTIONS */
 

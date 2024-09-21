@@ -1,8 +1,21 @@
 %{
 
+// C file dependencies
+
 #include "BisonActions.h"
+#include "./SyntacticAnalyzer.h"
+#include "./AbstractSyntaxTree.h"
 
 %}
+
+%code requires {
+
+// Header file dependencies
+
+#include "./AbstractSyntaxTree.h"
+#include "../../shared/Type.h"
+
+}
 
 // You touch this, and you die.
 %define api.value.union.name SemanticValue

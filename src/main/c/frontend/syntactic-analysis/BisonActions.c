@@ -1,4 +1,9 @@
 #include "BisonActions.h"
+#include "../../shared/CompilerState.h"
+#include "../../shared/Logger.h"
+#include "../../shared/Type.h"
+#include "AbstractSyntaxTree.h"
+#include <stdlib.h>
 
 /* MODULE INTERNAL STATE */
 

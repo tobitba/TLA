@@ -1,10 +1,7 @@
 #ifndef STRING_HEADER
 #define STRING_HEADER
 
-#include <ctype.h>
 #include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
 
 /**
  * Concatenates a list of strings. The returned string must be freed because
