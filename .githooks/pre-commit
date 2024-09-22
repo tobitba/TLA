@@ -10,7 +10,6 @@ fi
 
 echo -e "\e[33mRunning linter...\e[0m"
 for file in $modified_files; do
-
 	if ! (clang-tidy -p ./build "$file" 2>&1); then
 		echo -e "\e[31mLinter found errors in \e[46m\e[31m$file\e[0m\e[31m. Aborting commit.\e[0m"
 		exit 1
