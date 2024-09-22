@@ -25,6 +25,9 @@ Set the following environment variables to control and configure the behaviour o
 
 ## CI/CD
 
+You must install the `clang` package containing the `clang-tidy` and `clang-format` executables and run the `script/ubuntu/setup.sh` script.
+This will activate a pre-commit githook that lints and checks formatting of the to-be commited files.
+
 To trigger an automatic integration on every push or PR (_Pull Request_), you must activate _GitHub Actions_ in the _Settings_ tab. Use the following configuration:
 
 |Key|Value|
