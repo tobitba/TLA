@@ -63,6 +63,7 @@ SyntacticAnalysisStatus parse(CompilerState* compilerState) {
     } else {
       syntacticAnalysisStatus = REJECT;
     }
+    break;
   case 1:
     syntacticAnalysisStatus = REJECT;
     break;
