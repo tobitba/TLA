@@ -19,7 +19,8 @@ static const char* _toContextString(const LoggingLevel loggingLevel);
 static void _log(const Logger* logger, const LoggingLevel loggingLevel, const char* const format, va_list arguments) {
   if (logger->loggingLevel <= loggingLevel) {
     const char* context = _toContextString(loggingLevel);
-    char* effectiveFormat = concatenate(6, context, "[", logger->name, "] ", format, "\n");
+    static const int concatCount = 6;
+    char* effectiveFormat = concatenate(concatCount, context, "[", logger->name, "] ", format, "\n");
     if (ERROR <= loggingLevel) {
       _logInStream(stderr, effectiveFormat, arguments);
     } else {
@@ -76,8 +77,9 @@ static const char* _toContextString(const LoggingLevel loggingLevel) {
 Logger* createLogger(char* name) {
   Logger* logger = calloc(1, sizeof(Logger));
   logger->loggingLevel = _loggingLevelFromString(getStringOrDefault("LOGGING_LEVEL", "INFORMATION"));
-  logger->name = calloc(1 + strlen(name), sizeof(char));
-  strcpy(logger->name, name);
+  const size_t length = 1 + strlen(name);
+  logger->name = calloc(length, sizeof(char));
+  strlcpy(logger->name, name, length);
   return logger;
 }
 

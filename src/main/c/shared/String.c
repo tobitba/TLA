@@ -14,71 +14,71 @@ static const char* _controlCharacterToEscapedString(const char character);
  */
 static const char* _controlCharacterToEscapedString(const char character) {
   switch (character) {
-  case 0x00:
+  case CTRL_NUL:
     return "\\0";
-  case 0x01:
+  case CTRL_SOH:
     return "\\x01";
-  case 0x02:
+  case CTRL_STX:
     return "\\x02";
-  case 0x03:
+  case CTRL_ETX:
     return "\\x03";
-  case 0x04:
+  case CTRL_EOT:
     return "\\x04";
-  case 0x05:
+  case CTRL_ENQ:
     return "\\x05";
-  case 0x06:
+  case CTRL_ACK:
     return "\\x06";
-  case 0x07:
+  case CTRL_BEL:
     return "\\a";
-  case 0x08:
+  case CTRL_BS:
     return "\\b";
-  case 0x09:
+  case CTRL_HT:
     return "\\t";
-  case 0x0A:
+  case CTRL_LF:
     return "\\n";
-  case 0x0B:
+  case CTRL_VT:
     return "\\v";
-  case 0x0C:
+  case CTRL_FF:
     return "\\f";
-  case 0x0D:
+  case CTRL_CR:
     return "\\r";
-  case 0x0E:
+  case CTRL_SO:
     return "\\x0E";
-  case 0x0F:
+  case CTRL_SI:
     return "\\x0F";
-  case 0x10:
+  case CTRL_DLE:
     return "\\x10";
-  case 0x11:
+  case CTRL_DC1:
     return "\\x11";
-  case 0x12:
+  case CTRL_DC2:
     return "\\x12";
-  case 0x13:
+  case CTRL_DC3:
     return "\\x13";
-  case 0x14:
+  case CTRL_DC4:
     return "\\x14";
-  case 0x15:
+  case CTRL_NAK:
     return "\\x15";
-  case 0x16:
+  case CTRL_SYN:
     return "\\x16";
-  case 0x17:
+  case CTRL_ETB:
     return "\\x17";
-  case 0x18:
+  case CTRL_CAN:
     return "\\x18";
-  case 0x19:
+  case CTRL_EM:
     return "\\x19";
-  case 0x1A:
+  case CTRL_SUB:
     return "\\x1A";
-  case 0x1B:
+  case CTRL_ESC:
     return "\\x1B";
-  case 0x1C:
+  case CTRL_FS:
     return "\\x1C";
-  case 0x1D:
+  case CTRL_GS:
     return "\\x1D";
-  case 0x1E:
+  case CTRL_RS:
     return "\\x1E";
-  case 0x1F:
+  case CTRL_US:
     return "\\x1F";
-  case 0x7F:
+  case CTRL_DEL:
     return "\\x7F";
   default:
     return NULL;
@@ -100,7 +100,7 @@ char* concatenate(const unsigned int count, ...) {
   va_start(arguments, count);
   for (unsigned int k = 0; k < count; ++k) {
     const char* nextString = va_arg(arguments, const char*);
-    strcat(string, nextString);
+    strlcat(string, nextString, length);
   }
   va_end(arguments);
   return string;
@@ -119,10 +119,10 @@ char* escape(const char* string) {
   char charToString[2] = {0, 0};
   for (unsigned int k = 0; 0 < string[k]; ++k) {
     if (iscntrl(string[k])) {
-      strcat(escapedString, _controlCharacterToEscapedString(string[k]));
+      strlcat(escapedString, _controlCharacterToEscapedString(string[k]), length);
     } else {
       charToString[0] = string[k];
-      strcat(escapedString, charToString);
+      strlcat(escapedString, charToString, length);
     }
   }
   return escapedString;

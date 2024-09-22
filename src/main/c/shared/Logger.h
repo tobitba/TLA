@@ -1,8 +1,6 @@
 #ifndef LOGGER_HEADER
 #define LOGGER_HEADER
 
-#include <stdarg.h>
-
 /**
  * Platform dependent macros.
  *

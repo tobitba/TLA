@@ -22,8 +22,6 @@ void shutdownSyntacticAnalyzerModule() {
 
 /** IMPORTED FUNCTIONS */
 
-extern LexicalAnalyzerContext* createLexicalAnalyzerContext();
-
 /**
  * Bison exported functions.
  *

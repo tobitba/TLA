@@ -22,7 +22,7 @@ void shutdownCalculatorModule() {
 /** PRIVATE FUNCTIONS */
 
 static BinaryOperator _expressionTypeToBinaryOperator(const ExpressionType type);
-static ComputationResult _invalidBinaryOperator(const int x, const int y);
+static ComputationResult _invalidBinaryOperator();
 static ComputationResult _invalidComputation();
 
 /**
@@ -49,7 +49,7 @@ static BinaryOperator _expressionTypeToBinaryOperator(const ExpressionType type)
 /**
  * A binary operator that always returns an invalid computation result.
  */
-static ComputationResult _invalidBinaryOperator(const int x, const int y) {
+static ComputationResult _invalidBinaryOperator() {
   return _invalidComputation();
 }
 
@@ -100,7 +100,7 @@ ComputationResult computeExpression(Expression* expression) {
   case ADDITION:
   case DIVISION:
   case MULTIPLICATION:
-  case SUBTRACTION:
+  case SUBTRACTION:;
     ComputationResult leftResult = computeExpression(expression->leftExpression);
     ComputationResult rightResult = computeExpression(expression->rightExpression);
     if (leftResult.succeed && rightResult.succeed) {

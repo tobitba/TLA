@@ -12,16 +12,16 @@
 extern unsigned int flexCurrentContext(void);
 
 // The lexeme length in characters (provided by Flex).
-extern int yyleng;
+extern const int yyleng;
 
 // The line number (provided by Flex).
-extern int yylineno;
+extern const int yylineno;
 
 // The semantic value of the lookahead symbol (provided by Bison).
 extern union SemanticValue yylval;
 
 // The current lexeme (provided by Flex).
-extern char* yytext;
+extern const char* const yytext;
 
 /* PUBLIC FUNCTIONS */
 
