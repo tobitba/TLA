@@ -38,9 +38,9 @@ extern LexicalAnalyzerContext* createLexicalAnalyzerContext();
 extern int yyparse(void);
 
 // Bison error-reporting function.
-void yyerror(const char* string) {
+void yyerror(const char* error) {
   LexicalAnalyzerContext* lexicalAnalyzerContext = createLexicalAnalyzerContext();
-  logError(_logger, "Syntax error (on line %d).", lexicalAnalyzerContext->line);
+  logError(_logger, "%s (on line %d).", error, lexicalAnalyzerContext->line);
 }
 
 /* PUBLIC FUNCTIONS */

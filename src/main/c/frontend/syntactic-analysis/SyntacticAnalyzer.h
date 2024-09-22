@@ -6,7 +6,7 @@
 /** Bison imported functions. */
 
 int yylex(void);
-void yyerror(const char* string);
+void yyerror(const char* error);
 
 /** Initialize module's internal state. */
 void initializeSyntacticAnalyzerModule();
