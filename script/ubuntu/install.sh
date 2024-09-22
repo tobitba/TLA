@@ -11,4 +11,6 @@ sudo apt-get install flex --yes
 sudo apt-get install gcc --yes
 sudo apt-get install make --yes
 
+./script/ubuntu/setup.sh
+
 echo "All done."

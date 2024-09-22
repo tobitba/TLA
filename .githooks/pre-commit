@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Get the list of staged files (added, copied, or modified)
+modified_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(c|cpp|h|hpp)$')
+
+if [[ -z "$modified_files" ]]; then
+	# No relevant files to check
+	exit 0
+fi
+
+echo -e "\e[33mRunning linter...\e[0m"
+for file in $modified_files; do
+
+	if ! (clang-tidy -p ./build "$file" 2>&1); then
+		echo -e "\e[31mLinter found errors in \e[46m\e[31m$file\e[0m\e[31m. Aborting commit.\e[0m"
+		exit 1
+	fi
+done
+echo -e "\e[32mAll linter checks passed.\e[0m"
+echo
+
+echo -e "\e[33mChecking formatting...\e[0m"
+# shellcheck disable=SC2086 # Intended splitting of modified_files
+if ! (clang-format --dry-run --Werror ${modified_files}); then
+	echo -e "\e[31mFormatter found issues. Please correctly format the files.\e[0m"
+	exit 1
+fi
+echo -e "\e[32mAll files formatted correctly.\e[0m"
+echo
+
+# If we reach this point, both checks passed
+exit 0
