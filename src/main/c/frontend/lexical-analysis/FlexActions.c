@@ -40,24 +40,24 @@ static void _logLexicalAnalyzerContext(const char* functionName, LexicalAnalyzer
   free(escapedLexeme);
 }
 
+void _logIgnoredLexemeAction(const char* functionName, LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  if (_logIgnoredLexemes) {
+    _logLexicalAnalyzerContext(functionName, lexicalAnalyzerContext);
+  }
+}
+
 /* PUBLIC FUNCTIONS */
 
 void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  if (_logIgnoredLexemes) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-  }
+  _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
 }
 
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  if (_logIgnoredLexemes) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-  }
+  _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
 }
 
 void IgnoredLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  if (_logIgnoredLexemes) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-  }
+  _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
 }
 
 Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token) {
