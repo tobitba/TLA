@@ -23,16 +23,9 @@
 %union {
 	/** Terminals. */
 
-	int integer;
-	char* variable;
-	Token token;
-
 	/** Non-terminals. */
 
-	Constant * constant;
-	Expression * expression;
-	Factor * factor;
-	Program * program;
+	Program* program;
 }
 
 /**
@@ -51,24 +44,37 @@
 */
 
 /** Terminals. */
-%token <terminals> TERMINALS
-%token <nonTerminals> NON_TERMINALS
-%token <productions> PRODUCTIONS
-%token <initialSymbol> INITIAL_SYMBOL
-%token <integer> INTEGER
-%token <token> ADD
-%token <token> CLOSE_PARENTHESIS
-%token <token> DIV
-%token <token> MUL
-%token <token> OPEN_PARENTHESIS
-%token <token> SUB
+%token <> ID
+%token <> EQUALS_SIGN
+%token <> ANGLE_BRACKET_OPEN
+%token <> ANGLE_BRACKET_CLOSE
+%token <> BRACES_OPEN
+%token <> BRACES_CLOSE
+%token <> COMMA
+%token <> RIGHT_ARROW
+%token <> TERMINAL
+%token <> NON_TERMINAL
+%token <> LAMBDA
+%token <> PIPE
 
 %token <token> UNKNOWN
 
 /** Non-terminals. */
-%type <constant> constant
-%type <expression> expression
-%type <factor> factor
+%type <> terminalsSetId
+%type <> nonTerminalsSetId
+%type <> productionsSetId
+%type <> initialSymbolId
+%type <> grammarId
+%type <> grammarDefinition
+
+%type <> terminalsSet
+%type <> nonTerminalsSet
+%type <> productionsSet
+%type <> production
+%type <> rhs
+%type <> initialSymbol
+%type <> grammar
+
 %type <program> program
 
 /**
@@ -83,24 +89,84 @@
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
-program: expression													                { $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
+program: grammar                                                      {}
 	;
 
-expression: expression[left] ADD expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
-	| expression[left] DIV expression[right]						      { $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }
-	| expression[left] MUL expression[right]						      { $$ = ArithmeticExpressionSemanticAction($left, $right, MULTIPLICATION); }
-	| expression[left] SUB expression[right]						      { $$ = ArithmeticExpressionSemanticAction($left, $right, SUBTRACTION); }
-	| factor														                      { $$ = FactorExpressionSemanticAction($1); }
-	;
+grammar: terminalsSet nonTerminalsSet productionsSet initialSymbol    {}
+  ;
 
-factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS				{ $$ = ExpressionFactorSemanticAction($2); }
-	| constant														                    { $$ = ConstantFactorSemanticAction($1); }
-	;
+terminalsSet:
+  terminalsSetId EQUALS_SIGN BRACES_OPEN
+    terminalsSetValues
+  BRACES_CLOSE                              {}
+  ;
 
-constant: INTEGER													                  { $$ = IntegerConstantSemanticAction($1); }
-	;
+terminalsSetId: ID                          {}
+  ;
 
-constant: TERMINALS | NON_TERMINALS | PRODUCTIONS					  { $$ = IntegerConstantSemanticAction(9); }
-	;
+terminalsSetValues: TERMINAL                {}
+  | terminalsSetValues COMMA TERMINAL       {}
+  ;
+
+nonTerminalsSet:
+  nonTerminalsSetId EQUALS_SIGN BRACES_OPEN
+    nonTerminalsSetValues
+  BRACES_CLOSE                              {}
+  ;
+
+nonTerminalsSetValues: NON_TERMINAL             {}
+  | nonTerminalsSetValues COMMA NON_TERMINAL    {}
+  ;
+
+productionsSet:
+  productionsSetId EQUALS_SIGN BRACES_OPEN
+    productionsSetValues
+  BRACES_CLOSE                              {}
+  ;
+
+productionsSetValues: production            {}
+  | productionsSetValues COMMA production   {}
+  ;
+
+// initialSymbol???
+production: NON_TERMINAL RIGHT_ARROW rhs    {}
+  | production PIPE rhs                     {}
+  ;
+
+rhs: LAMBDA                                 {}
+  | TERMINAL                                {}
+  | TERMINAL NON_TERMINAL                   {}
+  ;
+
+//// How to do this ////
+grammarDefinition:
+  grammarId EQUALS_SIGN ANGLE_BRACKET_OPEN
+    terminalsSetId COMMA nonTerminalsSetId COMMA productionsSetId COMMA initialSymbolId
+  ANGLE_BRACKET_CLOSE                       {}
+  ;
+
+grammarId: ID {}
+  ;
+terminalsSetId: ID {}
+  ;
+nonTerminalsSetId: ID {}
+  ;
+productionsSetId: ID {}
+  ;
+initialSymbolId: ID {}
+  ;
+
+# This doens't work because each consecutive id gets consumed to generate de next one...
+# grammarId: ID[id] EQUALS_SIGN ANGLE_BRACKET_OPEN  {$$ = $id}
+#   ;
+# terminalsSetId: grammarId ID[id]                  {$$ = $id}
+#   ;
+# nonTerminalsSetId: terminalsSetId COMMA ID[id]    {$$ = $id}
+#   ;
+# productionsSetId: nonTerminalsSetId COMMA ID[id]  {$$ = $id}
+#   ;
+# initialSymbolId: productionsSetId COMMA ID[id]    {$$ = $id}
+#   ;
+////////////////////////
 
 %%
