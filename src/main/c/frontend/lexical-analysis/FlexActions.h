@@ -20,6 +20,11 @@ void BeginSingleLineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerC
 void EndSingleLineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 void IgnoredLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 
+void BeginGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
+void EndGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
+
+Token VariableNameLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
+
 Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token);
 Token IntegerLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 Token ParenthesisLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token);

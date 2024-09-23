@@ -68,6 +68,34 @@ void IgnoredLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
 }
 
+int grammarDefVarCount;
+void BeginGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+  grammarDefVarCount = 0;
+}
+
+void EndGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+}
+
+Token VariableNameLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+  ++grammarDefVarCount;
+  lexicalAnalyzerContext->semanticValue->variable = lexicalAnalyzerContext->lexeme;
+  switch (grammarDefVarCount) {
+  case 0:
+    return TERMINALS;
+  case 1:
+    return NON_TERMINALS;
+  case 2:
+    return PRODUCTIONS;
+  case 3:
+    return INITIAL_SYMBOL;
+  default:
+    exit(1);
+  }
+}
+
 Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token) {
   _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
   lexicalAnalyzerContext->semanticValue->token = token;

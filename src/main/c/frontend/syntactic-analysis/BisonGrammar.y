@@ -24,6 +24,7 @@
 	/** Terminals. */
 
 	int integer;
+	char* variable;
 	Token token;
 
 	/** Non-terminals. */
@@ -50,6 +51,10 @@
 */
 
 /** Terminals. */
+%token <terminals> TERMINALS
+%token <nonTerminals> NON_TERMINALS
+%token <productions> PRODUCTIONS
+%token <initialSymbol> INITIAL_SYMBOL
 %token <integer> INTEGER
 %token <token> ADD
 %token <token> CLOSE_PARENTHESIS
@@ -93,6 +98,9 @@ factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS				{ $$ = ExpressionFactor
 	;
 
 constant: INTEGER													                  { $$ = IntegerConstantSemanticAction($1); }
+	;
+
+constant: TERMINALS | NON_TERMINALS | PRODUCTIONS					  { $$ = IntegerConstantSemanticAction(9); }
 	;
 
 %%

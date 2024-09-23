@@ -19,6 +19,7 @@
  */
 %x MULTILINE_COMMENT
 %x SINGLE_COMMENT
+%x GRAMMAR_DEFINITION
 
 /**
  * Reusable patterns.
@@ -38,6 +39,13 @@
 <SINGLE_COMMENT>"\n"  			      	{ EndSingleLineCommentLexemeAction(createLexicalAnalyzerContext()); BEGIN(INITIAL); }
 <SINGLE_COMMENT>[^\n]+              { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <SINGLE_COMMENT>.                   { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
+
+"<"								                  { BEGIN(GRAMMAR_DEFINITION); BeginGrammarDefinitionLexemeAction(createLexicalAnalyzerContext()); }
+<GRAMMAR_DEFINITION>">"  			      { EndGrammarDefinitionLexemeAction(createLexicalAnalyzerContext()); BEGIN(INITIAL); }
+<GRAMMAR_DEFINITION>[[:space:]]*[[:alpha:]][[:alnum:]]*[[:space:]]* {
+                                      return VariableNameLexemeAction(createLexicalAnalyzerContext());
+                                    }
+<GRAMMAR_DEFINITION>.               { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
 "-"									                { return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), SUB); }
 "*"									                { return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), MUL); }
