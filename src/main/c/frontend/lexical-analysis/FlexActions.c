@@ -56,6 +56,14 @@ void EndMultilineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerCont
   _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
 }
 
+void BeginSingleLineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
+}
+
+void EndSingleLineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
+}
+
 void IgnoredLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
 }

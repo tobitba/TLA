@@ -18,6 +18,7 @@
  * @see https://westes.github.io/flex/manual/Start-Conditions.html
  */
 %x MULTILINE_COMMENT
+%x SINGLE_COMMENT
 
 /**
  * Reusable patterns.
@@ -32,6 +33,11 @@
 <MULTILINE_COMMENT>"*/"			      	{ EndMultilineCommentLexemeAction(createLexicalAnalyzerContext()); BEGIN(INITIAL); }
 <MULTILINE_COMMENT>[^*]+            { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <MULTILINE_COMMENT>.                { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
+
+"//"								                { BEGIN(SINGLE_COMMENT); BeginSingleLineCommentLexemeAction(createLexicalAnalyzerContext()); }
+<SINGLE_COMMENT>"\n"  			      	{ EndSingleLineCommentLexemeAction(createLexicalAnalyzerContext()); BEGIN(INITIAL); }
+<SINGLE_COMMENT>[^\n]+              { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
+<SINGLE_COMMENT>.                   { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
 "-"									                { return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), SUB); }
 "*"									                { return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), MUL); }

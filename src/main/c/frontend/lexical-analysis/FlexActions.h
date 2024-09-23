@@ -16,6 +16,8 @@ void shutdownFlexActionsModule();
 
 void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
+void BeginSingleLineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
+void EndSingleLineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 void IgnoredLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 
 Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token);
