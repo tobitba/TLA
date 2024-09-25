@@ -89,84 +89,52 @@
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
-program: grammar                                                      {}
-	;
+// ProgramSemanticAction should validate that all grammars are properly defined (all its sets exist and have no erros, etc).
+program: sentences                              { $$ = ProgramSemanticAction(currentCompilerState(), $1); }
 
-grammar: terminalsSet nonTerminalsSet productionsSet initialSymbol    {}
+sentences: sentence                             {}
+  | sentences sentence                          {}
   ;
 
-terminalsSet:
-  terminalsSetId EQUALS_SIGN BRACES_OPEN
-    terminalsSetValues
-  BRACES_CLOSE                              {}
+sentence: grammarDefinition                     {}
+  | symbolSet                                   {}
+  | productionSet                               {}
   ;
 
-terminalsSetId: ID                          {}
-  ;
-
-terminalsSetValues: TERMINAL                {}
-  | terminalsSetValues COMMA TERMINAL       {}
-  ;
-
-nonTerminalsSet:
-  nonTerminalsSetId EQUALS_SIGN BRACES_OPEN
-    nonTerminalsSetValues
-  BRACES_CLOSE                              {}
-  ;
-
-nonTerminalsSetValues: NON_TERMINAL             {}
-  | nonTerminalsSetValues COMMA NON_TERMINAL    {}
-  ;
-
-productionsSet:
-  productionsSetId EQUALS_SIGN BRACES_OPEN
-    productionsSetValues
-  BRACES_CLOSE                              {}
-  ;
-
-productionsSetValues: production            {}
-  | productionsSetValues COMMA production   {}
-  ;
-
-// initialSymbol???
-production: NON_TERMINAL RIGHT_ARROW rhs    {}
-  | production PIPE rhs                     {}
-  ;
-
-rhs: LAMBDA                                 {}
-  | TERMINAL                                {}
-  | TERMINAL NON_TERMINAL                   {}
-  ;
-
-//// How to do this ////
 grammarDefinition:
-  grammarId EQUALS_SIGN ANGLE_BRACKET_OPEN
-    terminalsSetId COMMA nonTerminalsSetId COMMA productionsSetId COMMA initialSymbolId
-  ANGLE_BRACKET_CLOSE                       {}
+  ID[grammarId] EQUALS ANGLE_BRACKET_OPEN
+    ID[terminalsId] COMMA
+    ID[nonTerminalsId] COMMA
+    ID[productionsId] COMMA
+    SYMBOL[initialSymbol]
+  ANGLE_BRACKET_CLOSE                           { $$ = GrammarSemanticAction($grammarId, $terminalsId, $nonTerminalsId, $initialSymbol); }
+
+symbolSet:
+  ID[setId] EQUALS BRACES_OPEN
+    symbols[values]
+  BRACES_CLOSE                                  { $$ = SymbolSetSemanticAction($setId, $values); }
+
+symbols: SYMBOL                                 { $$ = initializeSimbolList($1); }
+  | symbols[list] COMMA SYMBOL[val]             { pushSymbol($list, $val); $$ = $list; }
   ;
 
-grammarId: ID {}
-  ;
-terminalsSetId: ID {}
-  ;
-nonTerminalsSetId: ID {}
-  ;
-productionsSetId: ID {}
-  ;
-initialSymbolId: ID {}
+productionSet:
+  ID[setId] EQUALS BRACES_OPEN
+    productions[values]
+  BRACES_CLOSE                                  { $$ = ProductionSetSemanticAction($setId, $values); }
+
+productions: production                         { $$ = initializeProductionList($1); }
+  | productions[list] COMMA production[val]     { pushProduction($list, $val); $$ = $list }
   ;
 
-# This doens't work because each consecutive id gets consumed to generate de next one...
-# grammarId: ID[id] EQUALS_SIGN ANGLE_BRACKET_OPEN  {$$ = $id}
-#   ;
-# terminalsSetId: grammarId ID[id]                  {$$ = $id}
-#   ;
-# nonTerminalsSetId: terminalsSetId COMMA ID[id]    {$$ = $id}
-#   ;
-# productionsSetId: nonTerminalsSetId COMMA ID[id]  {$$ = $id}
-#   ;
-# initialSymbolId: productionsSetId COMMA ID[id]    {$$ = $id}
-#   ;
-////////////////////////
+production: SYMBOL RIGHT_ARROW productionRhs    { $$ = ProductionSemanticAction($1, $2); }
+
+productionRhs: string                           { $$ = initializeProductionRhsList($1); }
+  | productionsRhs[list] PIPE string[val]       { pushProductionRhs($list, $val); $$ = $list }
+  ;
+
+string: SYMBOL                                  { $$ = initializeString($1); }
+  | string[list] SYMBOL[val]                    { appendSymbol($list, $val); $$ = $list }
+  ;
 
 %%
