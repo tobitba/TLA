@@ -1,9 +1,10 @@
-#include "backend/code-generation/Generator.h"
-#include "backend/domain-specific/Calculator.h"
+// #include "backend/code-generation/Generator.h"
+// #include "backend/domain-specific/Calculator.h"
 #include "frontend/lexical-analysis/FlexActions.h"
 #include "frontend/syntactic-analysis/AbstractSyntaxTree.h"
 #include "frontend/syntactic-analysis/BisonActions.h"
 #include "frontend/syntactic-analysis/SyntacticAnalyzer.h"
+#include "shared/Array.h"
 #include "shared/CompilerState.h"
 #include "shared/Logger.h"
 #include "shared/Type.h"
@@ -20,8 +21,9 @@ int main(const int count, const char** arguments) {
   initializeBisonActionsModule();
   initializeSyntacticAnalyzerModule();
   initializeAbstractSyntaxTreeModule();
-  initializeCalculatorModule();
-  initializeGeneratorModule();
+  // initializeCalculatorModule();
+  // initializeGeneratorModule();
+  Array_initializeLogger();
 
   // Logs the arguments of the application.
   for (int k = 0; k < count; ++k) {
@@ -37,14 +39,14 @@ int main(const int count, const char** arguments) {
     // Beginning of the Backend... ------------------------------------------------------------
     logDebugging(logger, "Computing expression value...");
     Program* program = compilerState.abstractSyntaxtTree;
-    ComputationResult computationResult = computeExpression(program->expression);
-    if (computationResult.succeed) {
-      compilerState.value = computationResult.value;
-      generate(&compilerState);
-    } else {
-      logError(logger, "The computation phase rejects the input program.");
-      compilationStatus = FAILED;
-    }
+    // ComputationResult computationResult = computeExpression(program->expression);
+    // if (computationResult.succeed) {
+    //   compilerState.value = computationResult.value;
+    //   generate(&compilerState);
+    // } else {
+    //   logError(logger, "The computation phase rejects the input program.");
+    //   compilationStatus = FAILED;
+    // }
     // ...end of the Backend. -----------------------------------------------------------------
     // ----------------------------------------------------------------------------------------
     logDebugging(logger, "Releasing AST resources...");
@@ -55,8 +57,9 @@ int main(const int count, const char** arguments) {
   }
 
   logDebugging(logger, "Releasing modules resources...");
-  shutdownGeneratorModule();
-  shutdownCalculatorModule();
+  Array_freeLogger();
+  // shutdownGeneratorModule();
+  // shutdownCalculatorModule();
   shutdownAbstractSyntaxTreeModule();
   shutdownSyntacticAnalyzerModule();
   shutdownBisonActionsModule();

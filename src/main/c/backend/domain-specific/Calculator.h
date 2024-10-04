@@ -6,7 +6,7 @@
  * the layers of the backend and frontend using another group of
  * domain-specific models or DTOs (Data Transfer Objects).
  */
-#include "../../frontend/syntactic-analysis/AbstractSyntaxTree.h"
+// #include "../../frontend/syntactic-analysis/AbstractSyntaxTree.h"
 #include "../../shared/Type.h"
 #include <limits.h>
 
@@ -37,16 +37,16 @@ ComputationResult subtract(const int minuend, const int subtract);
 /**
  * Computes the final value of a mathematical constant.
  */
-ComputationResult computeConstant(Constant* constant);
+// ComputationResult computeConstant(Constant* constant);
 
 /**
  * Computes the final value of a mathematical expression.
  */
-ComputationResult computeExpression(Expression* expression);
+// ComputationResult computeExpression(Expression* expression);
 
 /**
  * Computes the final value of a mathematical factor.
  */
-ComputationResult computeFactor(Factor* factor);
+// ComputationResult computeFactor(Factor* factor);
 
 #endif
