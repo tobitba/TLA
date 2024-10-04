@@ -49,72 +49,60 @@ void _logIgnoredLexemeAction(const char* functionName, LexicalAnalyzerContext* l
 /* PUBLIC FUNCTIONS */
 
 void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
+  _logIgnoredLexemeAction(__func__, lexicalAnalyzerContext);
 }
 
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
+  _logIgnoredLexemeAction(__func__, lexicalAnalyzerContext);
 }
 
 void BeginSingleLineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
+  _logIgnoredLexemeAction(__func__, lexicalAnalyzerContext);
 }
 
 void EndSingleLineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
+  _logIgnoredLexemeAction(__func__, lexicalAnalyzerContext);
 }
 
 void IgnoredLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  _logIgnoredLexemeAction(__FUNCTION__, lexicalAnalyzerContext);
+  _logIgnoredLexemeAction(__func__, lexicalAnalyzerContext);
 }
 
-int grammarDefVarCount;
 void BeginGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-  grammarDefVarCount = 0;
+  _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
 }
 
 void EndGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+  _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
 }
 
-Token VariableNameLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-  ++grammarDefVarCount;
-  lexicalAnalyzerContext->semanticValue->variable = lexicalAnalyzerContext->lexeme;
-  switch (grammarDefVarCount) {
-  case 0:
-    return TERMINALS;
-  case 1:
-    return NON_TERMINALS;
-  case 2:
-    return PRODUCTIONS;
-  case 3:
-    return INITIAL_SYMBOL;
-  default:
-    exit(1);
-  }
+void BeginSetDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
 }
 
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token) {
-  _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+void EndSetDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
+}
+
+Token TokenLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token) {
+  _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
   lexicalAnalyzerContext->semanticValue->token = token;
   return token;
 }
 
-Token IntegerLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-  lexicalAnalyzerContext->semanticValue->integer = atoi(lexicalAnalyzerContext->lexeme);
-  return INTEGER;
+Token IdLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
+  lexicalAnalyzerContext->semanticValue->id = lexicalAnalyzerContext->lexeme;
+  return ID;
 }
 
-Token ParenthesisLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token) {
-  _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-  lexicalAnalyzerContext->semanticValue->token = token;
-  return token;
+Token SymbolLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
+  lexicalAnalyzerContext->semanticValue->symbol = lexicalAnalyzerContext->lexeme;
+  return SYMBOL;
 }
 
 Token UnknownLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
-  _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+  _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
   return UNKNOWN;
 }

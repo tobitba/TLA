@@ -22,12 +22,12 @@ void IgnoredLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 
 void BeginGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 void EndGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
+void BeginSetDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
+void EndSetDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 
-Token VariableNameLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
-
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token);
-Token IntegerLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
-Token ParenthesisLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token);
+Token TokenLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token);
+Token IdLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
+Token SymbolLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 
 Token UnknownLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 
