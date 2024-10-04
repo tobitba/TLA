@@ -7,59 +7,85 @@ void initializeAbstractSyntaxTreeModule();
 /** Shutdown module's internal state. */
 void shutdownAbstractSyntaxTreeModule();
 
-/**
- * This typedefs allows self-referencing types.
- */
-
-typedef enum ExpressionType ExpressionType;
-typedef enum FactorType FactorType;
-
-typedef struct Constant Constant;
-typedef struct Expression Expression;
-typedef struct Factor Factor;
-typedef struct Program Program;
+// Forward declaration of Array to avoid circular references.
+typedef struct ArrayCDT* Array;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
  */
 
-enum ExpressionType { ADDITION, DIVISION, FACTOR, MULTIPLICATION, SUBTRACTION };
+typedef enum { GRAMMAR_DEFINITION, SYMBOL_SET, PRODUCTION_SET } SentenceType;
 
-enum FactorType { CONSTANT, EXPRESSION };
+typedef enum { SYMBOL_T, LAMBDA_T } StringElementType;
 
-struct Constant {
-  int value;
-};
+/**
+ * This typedefs allows self-referencing types.
+ */
 
-struct Factor {
-  union {
-    Constant* constant;
-    Expression* expression;
-  };
-  FactorType type;
-};
+typedef char* Id;
+typedef char* Symbol;
 
-struct Expression {
-  union {
-    Factor* factor;
-    struct {
-      Expression* leftExpression;
-      Expression* rightExpression;
-    };
-  };
-  ExpressionType type;
-};
+typedef struct Program Program;
+typedef struct Sentence Sentence;
+typedef struct GrammarDefinition GrammarDefinition;
+typedef struct SymbolSet SymbolSet;
+typedef struct ProductionSet ProductionSet;
+typedef struct Production Production;
+typedef struct StringElement StringElement;
+
+typedef Array SentenceArray;
+typedef Array SymbolArray;
+typedef Array ProductionArray;
+typedef Array ProductionRhsArray; // Array of String
+typedef Array String;             // Array of StringElement
 
 struct Program {
-  Expression* expression;
+  SentenceArray sentences;
+};
+
+struct GrammarDefinition {
+  Id id;
+  Id terminalSetId;
+  Id nonTerminalSetId;
+  Id productionSetId;
+  Id initialSymbolId;
+};
+
+struct SymbolSet {
+  Id id;
+  SymbolArray symbols;
+};
+
+struct ProductionSet {
+  Id id;
+  ProductionArray productions;
+};
+
+struct Sentence {
+  union {
+    GrammarDefinition* grammarDefinition;
+    SymbolSet* symbolSet;
+    ProductionSet* productionSet;
+  };
+  SentenceType type;
+};
+
+struct Production {
+  Symbol lhs;
+  ProductionRhsArray rhs;
+};
+
+struct StringElement {
+  Symbol symbol;
+  StringElementType type;
 };
 
 /**
  * Node recursive destructors.
  */
-void releaseConstant(Constant* constant);
-void releaseExpression(Expression* expression);
-void releaseFactor(Factor* factor);
+// void releaseConstant(Constant* constant);
+// void releaseExpression(Expression* expression);
+// void releaseFactor(Factor* factor);
 void releaseProgram(Program* program);
 
 #endif

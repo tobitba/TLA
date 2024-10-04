@@ -43,6 +43,8 @@
  */
 typedef enum { ALL = 0, DEBUGGING = 10, INFORMATION = 20, WARNING = 30, ERROR = 40, CRITICAL = 50 } LoggingLevel;
 
+#include <stdio.h>
+
 /**
  * The definition of a logger. It contains a name to see its traces, and a
  * logging level that defines when the logs must be visible.
@@ -68,6 +70,7 @@ void logCritical(const Logger* logger, const char* const format, ...);
 
 /** Logs at DEBUGGING level. */
 void logDebugging(const Logger* logger, const char* const format, ...);
+void vlogDebugging(const Logger* logger, const char* const format, va_list arguments);
 
 /** Logs at ERROR level. */
 void logError(const Logger* logger, const char* const format, ...);

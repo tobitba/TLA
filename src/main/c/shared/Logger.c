@@ -106,6 +106,10 @@ void logDebugging(const Logger* logger, const char* const format, ...) {
   va_end(arguments);
 }
 
+void vlogDebugging(const Logger* logger, const char* const format, va_list arguments) {
+  _log(logger, DEBUGGING, format, arguments);
+}
+
 void logError(const Logger* logger, const char* const format, ...) {
   va_list arguments;
   va_start(arguments, format);

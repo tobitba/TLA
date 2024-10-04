@@ -1,6 +1,9 @@
 #include "String.h"
+#include "utils.h"
 #include <ctype.h>
+#include <errno.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -135,4 +138,14 @@ char* indentation(const char character, const unsigned int level, const unsigned
     indentation[k] = character;
   }
   return indentation;
+}
+
+char* safeAsprintf(const char* restrict fmt, ...) {
+  va_list arguments;
+  va_start(arguments, fmt);
+  char* str;
+  int err = vasprintf(&str, fmt, arguments);
+  va_end(arguments);
+  if (err < 0) exitWithErrno(ENOMEM, __func__, "@asprintf error");
+  return str;
 }

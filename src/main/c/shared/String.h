@@ -68,4 +68,6 @@ char* escape(const char* string);
  */
 char* indentation(const char character, const unsigned int level, const unsigned int size);
 
+char* safeAsprintf(const char* restrict fmt, ...);
+
 #endif

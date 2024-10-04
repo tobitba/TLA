@@ -22,10 +22,22 @@
 
 %union {
 	/** Terminals. */
+	Token token;
+  Id id;
+  Symbol symbol;
 
 	/** Non-terminals. */
-
 	Program* program;
+  SentenceArray sentences;
+  Sentence* sentence;
+  GrammarDefinition* grammarDefinition;
+  SymbolSet* symbolSet;
+  SymbolArray symbols;
+  ProductionSet* productionSet;
+  ProductionArray productions;
+  Production* production;
+  ProductionRhsArray productionRhs;
+  SymbolArray string;
 }
 
 /**
@@ -44,61 +56,55 @@
 */
 
 /** Terminals. */
-%token <> ID
-%token <> EQUALS_SIGN
-%token <> ANGLE_BRACKET_OPEN
-%token <> ANGLE_BRACKET_CLOSE
-%token <> BRACES_OPEN
-%token <> BRACES_CLOSE
-%token <> COMMA
-%token <> RIGHT_ARROW
-%token <> TERMINAL
-%token <> NON_TERMINAL
-%token <> LAMBDA
-%token <> PIPE
+%token <id> ID
+%token <token> EQUALS
+%token <token> ANGLE_BRACKET_OPEN
+%token <token> ANGLE_BRACKET_CLOSE
+%token <token> BRACES_OPEN
+%token <token> BRACES_CLOSE
+%token <token> COMMA
+%token <token> RIGHT_ARROW
+%token <token> LAMBDA
+%token <token> PIPE
+%token <symbol> SYMBOL
 
 %token <token> UNKNOWN
 
 /** Non-terminals. */
-%type <> terminalsSetId
-%type <> nonTerminalsSetId
-%type <> productionsSetId
-%type <> initialSymbolId
-%type <> grammarId
-%type <> grammarDefinition
-
-%type <> terminalsSet
-%type <> nonTerminalsSet
-%type <> productionsSet
-%type <> production
-%type <> rhs
-%type <> initialSymbol
-%type <> grammar
-
 %type <program> program
+%type <sentences> sentences
+%type <sentence> sentence
+%type <grammarDefinition> grammarDefinition
+%type <symbolSet> symbolSet
+%type <symbols> symbols
+%type <productionSet> productionSet
+%type <productions> productions
+%type <production> production
+%type <productionRhs> productionRhs
+%type <string> string
 
 /**
  * Precedence and associativity.
  *
  * @see https://www.gnu.org/software/bison/manual/html_node/Precedence.html
  */
-%left ADD SUB
-%left MUL DIV
+//%left ADD SUB
+//%left MUL DIV
 
 %%
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
 // ProgramSemanticAction should validate that all grammars are properly defined (all its sets exist and have no erros, etc).
-program: sentences                              { $$ = ProgramSemanticAction(currentCompilerState(), $1); }
+program: sentences                              { $$ = ProgramSemanticAction(currentCompilerState(), $1); }
 
-sentences: sentence                             {}
-  | sentences sentence                          {}
+sentences: sentence                             { $$ = SentenceArray_new($1); }
+  | sentences[list] sentence[val]               { $$ = SentenceArray_push($list, $val); }
   ;
 
-sentence: grammarDefinition                     {}
-  | symbolSet                                   {}
-  | productionSet                               {}
+sentence: grammarDefinition                     { $$ = GrammarDefinitionSentenceSemanticAction($1); }
+  | symbolSet                                   { $$ = SymbolSetSentenceSemanticAction($1); }
+  | productionSet                               { $$ = ProductionSetSentenceSemanticAction($1); }
   ;
 
 grammarDefinition:
@@ -106,35 +112,40 @@ grammarDefinition:
     ID[terminalsId] COMMA
     ID[nonTerminalsId] COMMA
     ID[productionsId] COMMA
-    SYMBOL[initialSymbol]
-  ANGLE_BRACKET_CLOSE                           { $$ = GrammarSemanticAction($grammarId, $terminalsId, $nonTerminalsId, $initialSymbol); }
+    ID[initialSymbolId]
+  ANGLE_BRACKET_CLOSE                           { $$ = GrammarDefinitionSemanticAction(
+                                                         $grammarId, $terminalsId, $nonTerminalsId, $productionsId, $initialSymbolId
+                                                       );
+                                                }
 
 symbolSet:
   ID[setId] EQUALS BRACES_OPEN
     symbols[values]
-  BRACES_CLOSE                                  { $$ = SymbolSetSemanticAction($setId, $values); }
+  BRACES_CLOSE                                  { $$ = SymbolSetSemanticAction($setId, $values); }
 
-symbols: SYMBOL                                 { $$ = initializeSimbolList($1); }
-  | symbols[list] COMMA SYMBOL[val]             { pushSymbol($list, $val); $$ = $list; }
+symbols: SYMBOL                                 { $$ = SymbolArray_new($1); }
+  | symbols[list] COMMA SYMBOL[val]             { $$ = SymbolArray_push($list, $val); }
   ;
 
 productionSet:
   ID[setId] EQUALS BRACES_OPEN
     productions[values]
-  BRACES_CLOSE                                  { $$ = ProductionSetSemanticAction($setId, $values); }
+  BRACES_CLOSE                                  { $$ = ProductionSetSemanticAction($setId, $values); }
 
-productions: production                         { $$ = initializeProductionList($1); }
-  | productions[list] COMMA production[val]     { pushProduction($list, $val); $$ = $list }
+productions: production                         { $$ = ProductionArray_new($1); }
+  | productions[list] COMMA production[val]     { $$ = ProductionArray_push($list, $val); }
   ;
 
-production: SYMBOL RIGHT_ARROW productionRhs    { $$ = ProductionSemanticAction($1, $2); }
+production: SYMBOL[lhs] RIGHT_ARROW productionRhs[rhs]    { $$ = ProductionSemanticAction($lhs, $rhs); }
 
-productionRhs: string                           { $$ = initializeProductionRhsList($1); }
-  | productionsRhs[list] PIPE string[val]       { pushProductionRhs($list, $val); $$ = $list }
+productionRhs: string                           { $$ = ProductionRhsArray_new($1); }
+  | productionRhs[list] PIPE string[val]        { $$ = ProductionRhsArray_push($list, $val); }
   ;
 
-string: SYMBOL                                  { $$ = initializeString($1); }
-  | string[list] SYMBOL[val]                    { appendSymbol($list, $val); $$ = $list }
+string: LAMBDA                                  { $$ = String_new(); String_pushLambda($$); }
+  | SYMBOL                                      { $$ = String_new(); String_pushSymbol($$, $1); }
+  | string[list] LAMBDA                         { $$ = String_pushLambda($list); }
+  | string[list] SYMBOL[val]                    { $$ = String_pushSymbol($list, $val); }
   ;
 
 %%
