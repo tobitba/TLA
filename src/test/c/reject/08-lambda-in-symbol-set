@@ -1,0 +1,4 @@
+G = < sigma, N, P, S >
+N = { S, A, B, lambda }
+P = { S -> b A | c, A -> a }
+sigma = {a,b,c}

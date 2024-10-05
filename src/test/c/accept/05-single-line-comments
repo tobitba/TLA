@@ -1,0 +1,7 @@
+// This is the grammar definition.
+G = < sigma, N, P, S >
+// This is the non terminals set.
+N = { S, A, B }
+P = { S -> b A | c, A -> a }
+// sigma = { a, b, c, A -> b }
+sigma = { a, b, c }

@@ -1,0 +1,7 @@
+G = < sigma, N, P, S >
+N = { S, A, B }
+P = { S -> b A | c, A -> a }
+sigma = { a, b, c }
+
+G2 = < sigma, N, P2, S >
+P2 = { S -> b B | c | A, A -> a }

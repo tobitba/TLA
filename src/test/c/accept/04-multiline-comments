@@ -1,0 +1,11 @@
+/*
+This is
+a comment */
+G = < sigma, N, P, S >
+N = { S, A, B }
+/*
+This is another
+a comment
+*/
+P = { S -> b A | c, A -> a }
+sigma = { a, b, c }
