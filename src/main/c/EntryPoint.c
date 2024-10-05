@@ -1,6 +1,7 @@
 // #include "backend/code-generation/Generator.h"
 // #include "backend/domain-specific/Calculator.h"
 #include "frontend/lexical-analysis/FlexActions.h"
+#include "frontend/syntactic-analysis/ASTUtils.h"
 #include "frontend/syntactic-analysis/AbstractSyntaxTree.h"
 #include "frontend/syntactic-analysis/BisonActions.h"
 #include "frontend/syntactic-analysis/SyntacticAnalyzer.h"
@@ -9,6 +10,7 @@
 #include "shared/Logger.h"
 #include "shared/Type.h"
 #include <stddef.h>
+#include <stdlib.h>
 
 /**
  * The main entry-point of the entire application. If you use "strtok" to
@@ -24,6 +26,7 @@ int main(const int count, const char** arguments) {
   // initializeCalculatorModule();
   // initializeGeneratorModule();
   Array_initializeLogger();
+  initializeASTUtilsModule();
 
   // Logs the arguments of the application.
   for (int k = 0; k < count; ++k) {
@@ -37,8 +40,17 @@ int main(const int count, const char** arguments) {
   if (syntacticAnalysisStatus == ACCEPT) {
     // ----------------------------------------------------------------------------------------
     // Beginning of the Backend... ------------------------------------------------------------
-    logDebugging(logger, "Computing expression value...");
+    logInformation(logger, "Program:");
     Program* program = compilerState.abstractSyntaxtTree;
+
+    size_t sentencesLen = Array_getLen(program->sentences);
+    for (int i = 0; i < sentencesLen; ++i) {
+      Sentence* sentence = Array_get(program->sentences, i).sentence;
+      char* sentenceStr = Sentence_toString(sentence);
+      logInformation(logger, "Sentence %d: %s", i, sentenceStr);
+      free(sentenceStr);
+    }
+
     // ComputationResult computationResult = computeExpression(program->expression);
     // if (computationResult.succeed) {
     //   compilerState.value = computationResult.value;
@@ -58,6 +70,7 @@ int main(const int count, const char** arguments) {
 
   logDebugging(logger, "Releasing modules resources...");
   Array_freeLogger();
+  shutdownASTUtilsModule();
   // shutdownGeneratorModule();
   // shutdownCalculatorModule();
   shutdownAbstractSyntaxTreeModule();
