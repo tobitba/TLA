@@ -9,7 +9,12 @@
 
 static Logger* _logger = NULL;
 
-#define SYMBOL_COLOR INFORMATION_COLOR
+#define RESET_COLOR "\033[0m"
+#define GREEN_COLOR "\033[0;32m"
+#define BLUE_COLOR "\033[0;34m"
+
+#define COLORIZE_SYMBOL(str) GREEN_COLOR str RESET_COLOR
+#define COLORIZE_ID(str) BLUE_COLOR str RESET_COLOR
 
 void initializeASTUtilsModule() {
   _logger = createLogger("ASTUtils");
@@ -96,13 +101,13 @@ void ProductionRhsRuleArray_freeEle(ArrayElement ele) {
 // String conversions
 
 char* SymbolArrayElement_toString(ArrayElement ele) {
-  char* str = safeAsprintf(SYMBOL_COLOR "%s" DEFAULT_COLOR, ele.symbol);
+  char* str = safeAsprintf(COLORIZE_SYMBOL("%s"), ele.symbol);
   return str;
 }
 
 char* Production_toString(Production* production) {
   char* rhs = Array_toString(production->rhs);
-  char* str = safeAsprintf(SYMBOL_COLOR "%s" DEFAULT_COLOR " -> %s", production->lhs, rhs);
+  char* str = safeAsprintf(COLORIZE_SYMBOL("%s") " -> %s", production->lhs, rhs);
   free(rhs);
   return str;
 }
@@ -116,15 +121,15 @@ char* ProductionRhsRule_toString(ProductionRhsRule* productionRhsRule) {
   switch (productionRhsRule->type) {
   case SYMBOL_SYMBOL_T:
     str = safeAsprintf(
-      "[ " SYMBOL_COLOR "%s" DEFAULT_COLOR ", " SYMBOL_COLOR "%s" DEFAULT_COLOR " ]", productionRhsRule->leftSymbol,
+      "[ " COLORIZE_SYMBOL("%s") ", " COLORIZE_SYMBOL("%s") " ]", productionRhsRule->leftSymbol,
       productionRhsRule->rightSymbol
     );
     break;
   case SYMBOL_T:
-    str = safeAsprintf("[ " SYMBOL_COLOR "%s" DEFAULT_COLOR " ]", productionRhsRule->symbol);
+    str = safeAsprintf("[ " COLORIZE_SYMBOL("%s") " ]", productionRhsRule->symbol);
     break;
   case LAMBDA_T:
-    str = safeAsprintf("[ " SYMBOL_COLOR "󰘧" DEFAULT_COLOR " ]");
+    str = safeAsprintf("[ " COLORIZE_SYMBOL("󰘧") " ]");
     break;
   }
   return str;
@@ -136,7 +141,9 @@ char* ProductionRhsRuleArrayElement_toString(ArrayElement ele) {
 
 char* GrammarDefinition_toString(GrammarDefinition* grammarDefinition) {
   char* str = safeAsprintf(
-    "GrammarDefinition{ id: %s, terminalSetId: %s, nonTerminalSetId: %s, productionSetId: %s, initialSymbolId: %s }",
+    "GrammarDefinition{ id: " COLORIZE_ID("%s") ", terminalSetId: " COLORIZE_ID("%s"
+    ) ", nonTerminalSetId: " COLORIZE_ID("%s") ", productionSetId: " COLORIZE_ID("%s"
+    ) ", initialSymbolId: " COLORIZE_ID("%s") " }",
     grammarDefinition->id, grammarDefinition->terminalSetId, grammarDefinition->nonTerminalSetId,
     grammarDefinition->productionSetId, grammarDefinition->initialSymbolId
   );
@@ -145,14 +152,15 @@ char* GrammarDefinition_toString(GrammarDefinition* grammarDefinition) {
 
 char* SymbolSet_toString(SymbolSet* symbolSet) {
   char* symbols = Array_toString(symbolSet->symbols);
-  char* str = safeAsprintf("SymbolSet{ id: %s, symbols: %s }", symbolSet->id, symbols);
+  char* str = safeAsprintf("SymbolSet{ id: " COLORIZE_ID("%s") ", symbols: %s }", symbolSet->id, symbols);
   free(symbols);
   return str;
 }
 
 char* ProductionSet_toString(ProductionSet* productionSet) {
   char* productions = Array_toString(productionSet->productions);
-  char* str = safeAsprintf("ProductionSet{ id: %s, productions: %s }", productionSet->id, productions);
+  char* str =
+    safeAsprintf("ProductionSet{ id: " COLORIZE_ID("%s") ", productions: %s }", productionSet->id, productions);
   free(productions);
   return str;
 }
