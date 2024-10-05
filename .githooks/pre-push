@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Read the push details
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+	# Get the list of commits being pushed
+	commits=$(git rev-list "$remote_sha".."$local_sha")
+
+	# Check each commit message
+	for commit in $commits; do
+		message=$(git log --format=%B -n 1 "$commit")
+
+		if [[ $message == fixup* ]]; then
+			echo -e "\e[31mError fixup pending: '\e[46m\e[31m$message\e[0m\e[31m'. Aborting push.\e[0m"
+			exit 1
+		fi
+	done
+done
+
+# Allow the push if no commit messages start with 'fixup'
+exit 0
