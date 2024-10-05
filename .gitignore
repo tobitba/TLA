@@ -12,3 +12,6 @@ src/main/c/frontend/syntactic-analysis/BisonParser.h
 build.sh
 start.sh
 test.sh
+
+# gdb
+.gdb_history
