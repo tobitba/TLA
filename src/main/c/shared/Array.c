@@ -86,6 +86,15 @@ size_t Array_getLen(Array array) {
   return array->length;
 }
 
+void Array_concat(Array dest, Array src) {
+  if (dest == NULL) exitInvalidArgument(__func__, "Destination can't be NULL");
+  for (int i = 0; i < Array_getLen(src); ++i) {
+    Array_push(dest, Array_get(src, i));
+  }
+  free(src->values);
+  free(src);
+}
+
 char* Array_toString(Array array) {
   if (array == NULL) ARRAY_INSTANCE_NULL_EXIT;
   if (array->toStringEleFn == NULL) exitInvalidArgument(__func__, "print element function not set");

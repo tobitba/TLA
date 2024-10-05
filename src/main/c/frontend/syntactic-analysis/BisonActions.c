@@ -97,20 +97,20 @@ Sentence* GrammarDefinitionSentenceSemanticAction(GrammarDefinition* grammarDefi
   return sentence;
 }
 
-Sentence* SymbolSetSentenceSemanticAction(SymbolSet* symbolSet) {
+Sentence* SymbolSetBindingSentenceSemanticAction(SymbolSetBinding* symbolSetBinding) {
   _logSyntacticAnalyzerAction(__func__);
   Sentence* sentence = safeMalloc(sizeof(Sentence));
   sentence->type = SYMBOL_SET;
-  sentence->symbolSet = symbolSet;
+  sentence->symbolSetBinding = symbolSetBinding;
 
   return sentence;
 }
 
-Sentence* ProductionSetSentenceSemanticAction(ProductionSet* productionSet) {
+Sentence* ProductionSetBindingSentenceSemanticAction(ProductionSetBinding* productionSetBinding) {
   _logSyntacticAnalyzerAction(__func__);
   Sentence* sentence = safeMalloc(sizeof(Sentence));
   sentence->type = PRODUCTION_SET;
-  sentence->productionSet = productionSet;
+  sentence->productionSetBinding = productionSetBinding;
 
   return sentence;
 }
@@ -128,13 +128,13 @@ GrammarDefinition* GrammarDefinitionSemanticAction(
   return grammar;
 }
 
-SymbolSet* SymbolSetSemanticAction(Id setId, SymbolArray symbols) {
+SymbolSetBinding* SymbolSetBindingSemanticAction(Id setId, SymbolArray symbols) {
   _logSyntacticAnalyzerAction(__func__);
-  SymbolSet* symbolSet = safeMalloc(sizeof(SymbolSet));
-  symbolSet->id = setId;
-  symbolSet->symbols = symbols;
+  SymbolSetBinding* symbolSetBinding = safeMalloc(sizeof(SymbolSetBinding));
+  symbolSetBinding->id = setId;
+  symbolSetBinding->symbols = symbols;
 
-  return symbolSet;
+  return symbolSetBinding;
 }
 
 SymbolArray SymbolArray_new(Symbol symbol) {
@@ -152,13 +152,13 @@ SymbolArray SymbolArray_push(SymbolArray array, Symbol symbol) {
   return array;
 }
 
-ProductionSet* ProductionSetSemanticAction(Id setId, ProductionArray productions) {
+ProductionSetBinding* ProductionSetBindingSemanticAction(Id setId, ProductionArray productions) {
   _logSyntacticAnalyzerAction(__func__);
-  ProductionSet* productionSet = safeMalloc(sizeof(ProductionSet));
-  productionSet->id = setId;
-  productionSet->productions = productions;
+  ProductionSetBinding* productionSetBinding = safeMalloc(sizeof(ProductionSetBinding));
+  productionSetBinding->id = setId;
+  productionSetBinding->productions = productions;
 
-  return productionSet;
+  return productionSetBinding;
 }
 
 ProductionArray ProductionArray_new(Production* production) {
@@ -189,7 +189,8 @@ Production* ProductionSemanticAction(Symbol lhs, ProductionRhsRuleArray producti
 
 ProductionRhsRuleArray ProductionRhsRuleArray_new(ProductionRhsRule* productionRhsRule) {
   _logSyntacticAnalyzerAction(__func__);
-  SymbolArray array = Array_new(INIT_CAP, ProductionRhsRuleArray_freeEle, ProductionRhsRuleArrayElement_toString);
+  ProductionRhsRuleArray array =
+    Array_new(INIT_CAP, ProductionRhsRuleArray_freeEle, ProductionRhsRuleArrayElement_toString);
   ProductionRhsRuleArray_push(array, productionRhsRule);
 
   return array;
@@ -223,4 +224,26 @@ ProductionRhsRule* ProductionRhsRuleLambdaSemanticAction() {
   ProductionRhsRule* rule = safeMalloc(sizeof(ProductionRhsRule));
   rule->type = LAMBDA_T;
   return rule;
+}
+
+///////////// Set operations /////////////
+
+SymbolArray SymbolSetUnion(SymbolArray left, SymbolArray right) {
+  char* leftStr = Array_toString(left);
+  char* rightStr = Array_toString(right);
+  _logSyntacticAnalyzerPushAction(__func__, "SymbolArray(%s) ∪ SymbolArray(%s)", leftStr, rightStr);
+  free(leftStr);
+  free(rightStr);
+  Array_concat(left, right);
+  return left;
+}
+
+ProductionArray ProductionSetUnion(ProductionArray left, ProductionArray right) {
+  char* leftStr = Array_toString(left);
+  char* rightStr = Array_toString(right);
+  _logSyntacticAnalyzerPushAction(__func__, "ProductionArray(%s) ∪ ProductionArray(%s)", leftStr, rightStr);
+  free(leftStr);
+  free(rightStr);
+  Array_concat(left, right);
+  return left;
 }

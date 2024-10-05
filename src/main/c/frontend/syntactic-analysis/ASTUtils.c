@@ -41,10 +41,10 @@ void SentenceArray_freeEle(ArrayElement ele) {
     GrammarDefinition_free(ele.sentence->grammarDefinition);
     break;
   case SYMBOL_SET:
-    SymbolSet_free(ele.sentence->symbolSet);
+    SymbolSetBinding_free(ele.sentence->symbolSetBinding);
     break;
   case PRODUCTION_SET:
-    ProductionSet_free(ele.sentence->productionSet);
+    ProductionSetBinding_free(ele.sentence->productionSetBinding);
     break;
   }
   free(ele.sentence);
@@ -59,16 +59,16 @@ void GrammarDefinition_free(GrammarDefinition* grammarDefinition) {
   free(grammarDefinition);
 }
 
-void SymbolSet_free(SymbolSet* symbolSet) {
+void SymbolSetBinding_free(SymbolSetBinding* symbolSetBinding) {
   logDebugging(_logger, "Executing destructor: %s", __func__);
-  Array_free(symbolSet->symbols);
-  free(symbolSet);
+  Array_free(symbolSetBinding->symbols);
+  free(symbolSetBinding);
 }
 
-void ProductionSet_free(ProductionSet* productionSet) {
+void ProductionSetBinding_free(ProductionSetBinding* productionSetBinding) {
   logDebugging(_logger, "Executing destructor: %s", __func__);
-  Array_free(productionSet->productions);
-  free(productionSet);
+  Array_free(productionSetBinding->productions);
+  free(productionSetBinding);
 }
 
 void SymbolArray_freeEle(ArrayElement ele) {
@@ -150,17 +150,18 @@ char* GrammarDefinition_toString(GrammarDefinition* grammarDefinition) {
   return str;
 }
 
-char* SymbolSet_toString(SymbolSet* symbolSet) {
-  char* symbols = Array_toString(symbolSet->symbols);
-  char* str = safeAsprintf("SymbolSet{ id: " COLORIZE_ID("%s") ", symbols: %s }", symbolSet->id, symbols);
+char* SymbolSetBinding_toString(SymbolSetBinding* symbolSetBinding) {
+  char* symbols = Array_toString(symbolSetBinding->symbols);
+  char* str = safeAsprintf("SymbolSetBinding{ id: " COLORIZE_ID("%s") ", symbols: %s }", symbolSetBinding->id, symbols);
   free(symbols);
   return str;
 }
 
-char* ProductionSet_toString(ProductionSet* productionSet) {
-  char* productions = Array_toString(productionSet->productions);
-  char* str =
-    safeAsprintf("ProductionSet{ id: " COLORIZE_ID("%s") ", productions: %s }", productionSet->id, productions);
+char* ProductionSetBinding_toString(ProductionSetBinding* productionSetBinding) {
+  char* productions = Array_toString(productionSetBinding->productions);
+  char* str = safeAsprintf(
+    "ProductionSetBinding{ id: " COLORIZE_ID("%s") ", productions: %s }", productionSetBinding->id, productions
+  );
   free(productions);
   return str;
 }
@@ -172,10 +173,10 @@ char* Sentence_toString(Sentence* sentence) {
     str = GrammarDefinition_toString(sentence->grammarDefinition);
     break;
   case SYMBOL_SET:
-    str = SymbolSet_toString(sentence->symbolSet);
+    str = SymbolSetBinding_toString(sentence->symbolSetBinding);
     break;
   case PRODUCTION_SET:
-    str = ProductionSet_toString(sentence->productionSet);
+    str = ProductionSetBinding_toString(sentence->productionSetBinding);
     break;
   }
   return str;

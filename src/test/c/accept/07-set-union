@@ -1,4 +1,9 @@
 G = < sigma, N, P, S >
 N = { S, A, B }
-P = { S -> b A | c | B, A -> a, B -> d }
-sigma = { a, b, c } u { ab, bc }
+
+// `B -> d` and `B -> c A` should be added to the same array, which doesn't happen yet.
+// Should we check this in the front during parsing or in the back after parsing???
+P = { S -> b A | c | B, A -> a, B -> d } u { B -> c A }
+
+// Similar here, `a` should be added only once.
+sigma = { a, b, c } u { ab, bc } u { hola } u { a }

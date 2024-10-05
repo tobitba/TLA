@@ -28,8 +28,8 @@ typedef char* Symbol;
 typedef struct Program Program;
 typedef struct Sentence Sentence;
 typedef struct GrammarDefinition GrammarDefinition;
-typedef struct SymbolSet SymbolSet;
-typedef struct ProductionSet ProductionSet;
+typedef struct SymbolSetBinding SymbolSetBinding;
+typedef struct ProductionSetBinding ProductionSetBinding;
 typedef struct Production Production;
 typedef struct ProductionRhsRule ProductionRhsRule;
 
@@ -50,12 +50,12 @@ struct GrammarDefinition {
   Id initialSymbolId;
 };
 
-struct SymbolSet {
+struct SymbolSetBinding {
   Id id;
   SymbolArray symbols;
 };
 
-struct ProductionSet {
+struct ProductionSetBinding {
   Id id;
   ProductionArray productions;
 };
@@ -63,8 +63,8 @@ struct ProductionSet {
 struct Sentence {
   union {
     GrammarDefinition* grammarDefinition;
-    SymbolSet* symbolSet;
-    ProductionSet* productionSet;
+    SymbolSetBinding* symbolSetBinding;
+    ProductionSetBinding* productionSetBinding;
   };
   SentenceType type;
 };

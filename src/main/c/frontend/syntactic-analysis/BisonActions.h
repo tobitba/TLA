@@ -18,15 +18,15 @@ Program* ProgramSemanticAction(CompilerState* compilerState, SentenceArray sente
 SentenceArray SentenceArray_new(Sentence* sentence);
 SentenceArray SentenceArray_push(SentenceArray array, Sentence* sentence);
 Sentence* GrammarDefinitionSentenceSemanticAction(GrammarDefinition* grammarDefinition);
-Sentence* SymbolSetSentenceSemanticAction(SymbolSet* symbolSet);
-Sentence* ProductionSetSentenceSemanticAction(ProductionSet* productionSet);
+Sentence* SymbolSetBindingSentenceSemanticAction(SymbolSetBinding* symbolSetBinding);
+Sentence* ProductionSetBindingSentenceSemanticAction(ProductionSetBinding* productionSetBinding);
 GrammarDefinition* GrammarDefinitionSemanticAction(
   Id grammarId, Id terminalSetId, Id nonTerminalSetId, Id productionSetId, Id initialSymbolId
 );
-SymbolSet* SymbolSetSemanticAction(Id setId, SymbolArray symbols);
+SymbolSetBinding* SymbolSetBindingSemanticAction(Id setId, SymbolArray symbols);
 SymbolArray SymbolArray_new(Symbol symbol);
 SymbolArray SymbolArray_push(SymbolArray array, Symbol symbol);
-ProductionSet* ProductionSetSemanticAction(Id setId, ProductionArray productions);
+ProductionSetBinding* ProductionSetBindingSemanticAction(Id setId, ProductionArray productions);
 ProductionArray ProductionArray_new(Production* production);
 ProductionArray ProductionArray_push(ProductionArray array, Production* production);
 Production* ProductionSemanticAction(Symbol lhs, ProductionRhsRuleArray productionRhsRules);
@@ -35,5 +35,9 @@ ProductionRhsRuleArray ProductionRhsRuleArray_push(ProductionRhsRuleArray array,
 ProductionRhsRule* ProductionRhsRuleSymbolSymbolSemanticAction(Symbol leftSymbol, Symbol rightSymbol);
 ProductionRhsRule* ProductionRhsRuleSymbolSemanticAction(Symbol symbol);
 ProductionRhsRule* ProductionRhsRuleLambdaSemanticAction();
+
+// Set operations
+SymbolArray SymbolSetUnion(SymbolArray left, SymbolArray right);
+ProductionArray ProductionSetUnion(ProductionArray left, ProductionArray right);
 
 #endif

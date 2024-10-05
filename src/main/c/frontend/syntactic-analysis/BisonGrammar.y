@@ -31,9 +31,11 @@
   SentenceArray sentences;
   Sentence* sentence;
   GrammarDefinition* grammarDefinition;
-  SymbolSet* symbolSet;
+  SymbolSetBinding* symbolSetBinding;
+  SymbolArray symbolSet;
   SymbolArray symbols;
-  ProductionSet* productionSet;
+  ProductionSetBinding* productionSetBinding;
+  ProductionArray productionSet;
   ProductionArray productions;
   Production* production;
   ProductionRhsRuleArray productionRhsRules;
@@ -66,6 +68,7 @@
 %token <token> RIGHT_ARROW
 %token <token> LAMBDA
 %token <token> PIPE
+%token <token> UNION
 %token <symbol> SYMBOL
 
 %token <token> UNKNOWN
@@ -75,8 +78,10 @@
 %type <sentences> sentences
 %type <sentence> sentence
 %type <grammarDefinition> grammarDefinition
+%type <symbolSetBinding> symbolSetBinding
 %type <symbolSet> symbolSet
 %type <symbols> symbols
+%type <productionSetBinding> productionSetBinding
 %type <productionSet> productionSet
 %type <productions> productions
 %type <production> production
@@ -88,8 +93,7 @@
  *
  * @see https://www.gnu.org/software/bison/manual/html_node/Precedence.html
  */
-//%left ADD SUB
-//%left MUL DIV
+%left UNION
 
 %%
 
@@ -103,8 +107,8 @@ sentences: sentence                             { $$ = SentenceArray_new($1); }
   ;
 
 sentence: grammarDefinition                     { $$ = GrammarDefinitionSentenceSemanticAction($1); }
-  | symbolSet                                   { $$ = SymbolSetSentenceSemanticAction($1); }
-  | productionSet                               { $$ = ProductionSetSentenceSemanticAction($1); }
+  | symbolSetBinding                                   { $$ = SymbolSetBindingSentenceSemanticAction($1); }
+  | productionSetBinding                               { $$ = ProductionSetBindingSentenceSemanticAction($1); }
   ;
 
 grammarDefinition:
@@ -118,22 +122,26 @@ grammarDefinition:
                                                        );
                                                 }
 
-symbolSet:
-  ID[setId] EQUALS BRACES_OPEN
-    symbols[values]
-  BRACES_CLOSE                                  { $$ = SymbolSetSemanticAction($setId, $values); }
+symbolSetBinding:
+  ID[setId] EQUALS symbolSet[set]                               { $$ = SymbolSetBindingSemanticAction($setId, $set); }
 
-symbols: SYMBOL                                 { $$ = SymbolArray_new($1); }
-  | symbols[list] COMMA SYMBOL[val]             { $$ = SymbolArray_push($list, $val); }
+symbolSet: BRACES_OPEN symbols[values] BRACES_CLOSE             { $$ = $values; }
+  | symbolSet[left] UNION symbolSet[right]                      { $$ = SymbolSetUnion($left, $right); }
   ;
 
-productionSet:
-  ID[setId] EQUALS BRACES_OPEN
-    productions[values]
-  BRACES_CLOSE                                  { $$ = ProductionSetSemanticAction($setId, $values); }
+symbols: SYMBOL                                                 { $$ = SymbolArray_new($1); }
+  | symbols[list] COMMA SYMBOL[val]                             { $$ = SymbolArray_push($list, $val); }
+  ;
 
-productions: production                         { $$ = ProductionArray_new($1); }
-  | productions[list] COMMA production[val]     { $$ = ProductionArray_push($list, $val); }
+productionSetBinding:
+  ID[setId] EQUALS productionSet[set]                           { $$ = ProductionSetBindingSemanticAction($setId, $set); }
+
+productionSet: BRACES_OPEN productions[values] BRACES_CLOSE     { $$ = $values; }
+  | productionSet[left] UNION productionSet[right]              { $$ = ProductionSetUnion($left, $right); }
+  ;
+
+productions: production                                         { $$ = ProductionArray_new($1); }
+  | productions[list] COMMA production[val]                     { $$ = ProductionArray_push($list, $val); }
   ;
 
 production: SYMBOL[lhs] RIGHT_ARROW productionRhsRules[rhs]     { $$ = ProductionSemanticAction($lhs, $rhs); }

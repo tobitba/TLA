@@ -29,6 +29,12 @@ void Array_pop(Array array);
 size_t Array_getLen(Array array);
 
 /**
+ * @param `dest` Destination array, all elements from `src` will be pushed to `dest`.
+ * @param `src` Source array. Will be freed after call to prevent double free errors on the elements.
+ */
+void Array_concat(Array dest, Array src);
+
+/**
  * @param `array` The array to be converted to string.
  * @return Heap-allocated `char*` representing `array`.
  */

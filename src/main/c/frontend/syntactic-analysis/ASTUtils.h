@@ -9,8 +9,8 @@ void shutdownASTUtilsModule();
 void Program_free(Program* program);
 void SentenceArray_freeEle(ArrayElement ele);
 void GrammarDefinition_free(GrammarDefinition* grammarDefinition);
-void SymbolSet_free(SymbolSet* symbolSet);
-void ProductionSet_free(ProductionSet* productionSet);
+void SymbolSetBinding_free(SymbolSetBinding* symbolSetBinding);
+void ProductionSetBinding_free(ProductionSetBinding* productionSetBinding);
 void SymbolArray_freeEle(ArrayElement ele);
 void ProductionArray_freeEle(ArrayElement ele);
 void ProductionRhsRuleArray_freeEle(ArrayElement ele);
@@ -20,8 +20,8 @@ char* ProductionArrayElement_toString(ArrayElement ele);
 char* ProductionRhsRule_toString(ProductionRhsRule* productionRhsRule);
 char* ProductionRhsRuleArrayElement_toString(ArrayElement ele);
 char* GrammarDefinition_toString(GrammarDefinition* grammarDefinition);
-char* SymbolSet_toString(SymbolSet* symbolSet);
-char* ProductionSet_toString(ProductionSet* productionSet);
+char* SymbolSetBinding_toString(SymbolSetBinding* symbolSetBinding);
+char* ProductionSetBinding_toString(ProductionSetBinding* productionSetBinding);
 char* Sentence_toString(Sentence* sentence);
 
 #endif
