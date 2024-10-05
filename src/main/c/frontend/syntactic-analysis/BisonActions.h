@@ -29,11 +29,11 @@ SymbolArray SymbolArray_push(SymbolArray array, Symbol symbol);
 ProductionSet* ProductionSetSemanticAction(Id setId, ProductionArray productions);
 ProductionArray ProductionArray_new(Production* production);
 ProductionArray ProductionArray_push(ProductionArray array, Production* production);
-Production* ProductionSemanticAction(Symbol lhs, ProductionRhsArray strings);
-ProductionRhsArray ProductionRhsArray_new(SymbolArray string);
-ProductionRhsArray ProductionRhsArray_push(ProductionRhsArray array, SymbolArray string);
-String String_new();
-String String_pushLambda(String array);
-String String_pushSymbol(String array, Symbol symbol);
+Production* ProductionSemanticAction(Symbol lhs, ProductionRhsRuleArray productionRhsRules);
+ProductionRhsRuleArray ProductionRhsRuleArray_new(ProductionRhsRule* productionRhsRule);
+ProductionRhsRuleArray ProductionRhsRuleArray_push(ProductionRhsRuleArray array, ProductionRhsRule* productionRhsRule);
+ProductionRhsRule* ProductionRhsRuleSymbolSymbolSemanticAction(Symbol leftSymbol, Symbol rightSymbol);
+ProductionRhsRule* ProductionRhsRuleSymbolSemanticAction(Symbol symbol);
+ProductionRhsRule* ProductionRhsRuleLambdaSemanticAction();
 
 #endif

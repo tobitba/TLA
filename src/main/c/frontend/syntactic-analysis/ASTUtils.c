@@ -9,6 +9,8 @@
 
 static Logger* _logger = NULL;
 
+#define SYMBOL_COLOR INFORMATION_COLOR
+
 void initializeASTUtilsModule() {
   _logger = createLogger("ASTUtils");
 }
@@ -69,11 +71,6 @@ void SymbolArray_freeEle(ArrayElement ele) {
   free(ele.symbol);
 }
 
-void String_freeEle(ArrayElement ele) {
-  logDebugging(_logger, "Executing destructor: %s", __func__);
-  if (ele.stringElement.type == SYMBOL_T) free(ele.symbol);
-}
-
 void ProductionArray_freeEle(ArrayElement ele) {
   logDebugging(_logger, "Executing destructor: %s", __func__);
   free(ele.production->lhs);
@@ -81,32 +78,60 @@ void ProductionArray_freeEle(ArrayElement ele) {
   free(ele.production);
 }
 
-void ProductionRhsArray_freeEle(ArrayElement ele) {
+void ProductionRhsRuleArray_freeEle(ArrayElement ele) {
   logDebugging(_logger, "Executing destructor: %s", __func__);
-  Array_free(ele.string);
+  switch (ele.productionRhsRule->type) {
+  case SYMBOL_SYMBOL_T:
+    free(ele.productionRhsRule->leftSymbol);
+    free(ele.productionRhsRule->rightSymbol);
+    break;
+  case SYMBOL_T:
+    free(ele.productionRhsRule->symbol);
+    break;
+  default:
+    break;
+  }
 }
 
 // String conversions
 
 char* SymbolArrayElement_toString(ArrayElement ele) {
-  char* str = safeAsprintf("%s", ele.symbol);
+  char* str = safeAsprintf(SYMBOL_COLOR "%s" DEFAULT_COLOR, ele.symbol);
   return str;
 }
 
-char* StringElemenArrayElement_toString(ArrayElement ele) {
-  char* str = safeAsprintf("%s", ele.stringElement.type == SYMBOL_T ? ele.stringElement.symbol : "󰘧");
-  return str;
-}
-
-char* ProductionArrayElement_toString(ArrayElement ele) {
-  char* rhs = Array_toString(ele.production->rhs);
-  char* str = safeAsprintf("%s -> %s", ele.production->lhs, rhs);
+char* Production_toString(Production* production) {
+  char* rhs = Array_toString(production->rhs);
+  char* str = safeAsprintf(SYMBOL_COLOR "%s" DEFAULT_COLOR " -> %s", production->lhs, rhs);
   free(rhs);
   return str;
 }
 
-char* StringArrayElement_toString(ArrayElement ele) {
-  return Array_toString(ele.string);
+char* ProductionArrayElement_toString(ArrayElement ele) {
+  return Production_toString(ele.production);
+}
+
+char* ProductionRhsRule_toString(ProductionRhsRule* productionRhsRule) {
+  char* str;
+  switch (productionRhsRule->type) {
+  case SYMBOL_SYMBOL_T:
+    str = safeAsprintf(
+      "[ " SYMBOL_COLOR "%s" DEFAULT_COLOR ", " SYMBOL_COLOR "%s" DEFAULT_COLOR " ]", productionRhsRule->leftSymbol,
+      productionRhsRule->rightSymbol
+    );
+    break;
+  case SYMBOL_T:
+    str = safeAsprintf("[ " SYMBOL_COLOR "%s" DEFAULT_COLOR " ]", productionRhsRule->symbol);
+    break;
+  case LAMBDA_T:
+    str = safeAsprintf("[ " SYMBOL_COLOR "󰘧" DEFAULT_COLOR " ]");
+    break;
+  }
+  return str;
+}
+
+char* ProductionRhsRuleArrayElement_toString(ArrayElement ele) {
+  return ProductionRhsRule_toString(ele.productionRhsRule);
 }
 
 char* GrammarDefinition_toString(GrammarDefinition* grammarDefinition) {

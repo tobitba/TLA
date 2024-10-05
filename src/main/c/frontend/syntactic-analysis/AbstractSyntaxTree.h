@@ -16,7 +16,7 @@ typedef struct ArrayCDT* Array;
 
 typedef enum { GRAMMAR_DEFINITION, SYMBOL_SET, PRODUCTION_SET } SentenceType;
 
-typedef enum { SYMBOL_T, LAMBDA_T } StringElementType;
+typedef enum { SYMBOL_SYMBOL_T, SYMBOL_T, LAMBDA_T } ProductionRhsRuleType;
 
 /**
  * This typedefs allows self-referencing types.
@@ -31,13 +31,12 @@ typedef struct GrammarDefinition GrammarDefinition;
 typedef struct SymbolSet SymbolSet;
 typedef struct ProductionSet ProductionSet;
 typedef struct Production Production;
-typedef struct StringElement StringElement;
+typedef struct ProductionRhsRule ProductionRhsRule;
 
 typedef Array SentenceArray;
 typedef Array SymbolArray;
 typedef Array ProductionArray;
-typedef Array ProductionRhsArray; // Array of String
-typedef Array String;             // Array of StringElement
+typedef Array ProductionRhsRuleArray;
 
 struct Program {
   SentenceArray sentences;
@@ -72,12 +71,18 @@ struct Sentence {
 
 struct Production {
   Symbol lhs;
-  ProductionRhsArray rhs;
+  ProductionRhsRuleArray rhs;
 };
 
-struct StringElement {
-  Symbol symbol;
-  StringElementType type;
+struct ProductionRhsRule {
+  union {
+    struct {
+      Symbol leftSymbol;
+      Symbol rightSymbol;
+    };
+    Symbol symbol;
+  };
+  ProductionRhsRuleType type;
 };
 
 /**

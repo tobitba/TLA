@@ -5,6 +5,7 @@
 #include "../../shared/Logger.h"
 #include "../../shared/String.h"
 #include "../../shared/Type.h"
+#include "../../shared/utils.h"
 #include "ASTUtils.h"
 #include "AbstractSyntaxTree.h"
 #include <stdarg.h>
@@ -54,7 +55,7 @@ static void _logSyntacticAnalyzerPushAction(const char* functionName, const char
 
 Program* ProgramSemanticAction(CompilerState* compilerState, SentenceArray sentences) {
   _logSyntacticAnalyzerAction(__func__);
-  Program* program = malloc(sizeof(Program));
+  Program* program = safeMalloc(sizeof(Program));
   program->sentences = sentences;
   compilerState->abstractSyntaxtTree = program;
 
@@ -89,7 +90,7 @@ SentenceArray SentenceArray_push(SentenceArray array, Sentence* sentence) {
 
 Sentence* GrammarDefinitionSentenceSemanticAction(GrammarDefinition* grammarDefinition) {
   _logSyntacticAnalyzerAction(__func__);
-  Sentence* sentence = malloc(sizeof(Sentence));
+  Sentence* sentence = safeMalloc(sizeof(Sentence));
   sentence->type = GRAMMAR_DEFINITION;
   sentence->grammarDefinition = grammarDefinition;
 
@@ -98,7 +99,7 @@ Sentence* GrammarDefinitionSentenceSemanticAction(GrammarDefinition* grammarDefi
 
 Sentence* SymbolSetSentenceSemanticAction(SymbolSet* symbolSet) {
   _logSyntacticAnalyzerAction(__func__);
-  Sentence* sentence = malloc(sizeof(Sentence));
+  Sentence* sentence = safeMalloc(sizeof(Sentence));
   sentence->type = SYMBOL_SET;
   sentence->symbolSet = symbolSet;
 
@@ -107,7 +108,7 @@ Sentence* SymbolSetSentenceSemanticAction(SymbolSet* symbolSet) {
 
 Sentence* ProductionSetSentenceSemanticAction(ProductionSet* productionSet) {
   _logSyntacticAnalyzerAction(__func__);
-  Sentence* sentence = malloc(sizeof(Sentence));
+  Sentence* sentence = safeMalloc(sizeof(Sentence));
   sentence->type = PRODUCTION_SET;
   sentence->productionSet = productionSet;
 
@@ -118,7 +119,7 @@ GrammarDefinition* GrammarDefinitionSemanticAction(
   Id grammarId, Id terminalSetId, Id nonTerminalSetId, Id productionSetId, Id initialSymbolId
 ) {
   _logSyntacticAnalyzerAction(__func__);
-  GrammarDefinition* grammar = malloc(sizeof(GrammarDefinition));
+  GrammarDefinition* grammar = safeMalloc(sizeof(GrammarDefinition));
   grammar->id = grammarId;
   grammar->terminalSetId = terminalSetId;
   grammar->nonTerminalSetId = nonTerminalSetId;
@@ -129,7 +130,7 @@ GrammarDefinition* GrammarDefinitionSemanticAction(
 
 SymbolSet* SymbolSetSemanticAction(Id setId, SymbolArray symbols) {
   _logSyntacticAnalyzerAction(__func__);
-  SymbolSet* symbolSet = malloc(sizeof(SymbolSet));
+  SymbolSet* symbolSet = safeMalloc(sizeof(SymbolSet));
   symbolSet->id = setId;
   symbolSet->symbols = symbols;
 
@@ -153,7 +154,7 @@ SymbolArray SymbolArray_push(SymbolArray array, Symbol symbol) {
 
 ProductionSet* ProductionSetSemanticAction(Id setId, ProductionArray productions) {
   _logSyntacticAnalyzerAction(__func__);
-  ProductionSet* productionSet = malloc(sizeof(ProductionSet));
+  ProductionSet* productionSet = safeMalloc(sizeof(ProductionSet));
   productionSet->id = setId;
   productionSet->productions = productions;
 
@@ -169,59 +170,57 @@ ProductionArray ProductionArray_new(Production* production) {
 }
 
 ProductionArray ProductionArray_push(ProductionArray array, Production* production) {
-  char* rhs = Array_toString(production->rhs);
-  _logSyntacticAnalyzerPushAction(__func__, "Production{lhs: %s, rhs: %s}", production->lhs, rhs);
-  free(rhs);
+  char* str = Production_toString(production);
+  _logSyntacticAnalyzerPushAction(__func__, "Production(%s)", str);
+  free(str);
   ArrayElement ele = {.production = production};
   Array_push(array, ele);
   return array;
 }
 
-Production* ProductionSemanticAction(Symbol lhs, ProductionRhsArray strings) {
+Production* ProductionSemanticAction(Symbol lhs, ProductionRhsRuleArray productionRhsRules) {
   _logSyntacticAnalyzerAction(__func__);
-  Production* production = malloc(sizeof(Production));
+  Production* production = safeMalloc(sizeof(Production));
   production->lhs = lhs;
-  production->rhs = strings;
+  production->rhs = productionRhsRules;
 
   return production;
 }
 
-ProductionRhsArray ProductionRhsArray_new(SymbolArray string) {
+ProductionRhsRuleArray ProductionRhsRuleArray_new(ProductionRhsRule* productionRhsRule) {
   _logSyntacticAnalyzerAction(__func__);
-  SymbolArray array = Array_new(INIT_CAP, ProductionRhsArray_freeEle, StringArrayElement_toString);
-  ProductionRhsArray_push(array, string);
+  SymbolArray array = Array_new(INIT_CAP, ProductionRhsRuleArray_freeEle, ProductionRhsRuleArrayElement_toString);
+  ProductionRhsRuleArray_push(array, productionRhsRule);
 
   return array;
 }
 
-ProductionRhsArray ProductionRhsArray_push(ProductionRhsArray array, SymbolArray string) {
-  char* str = Array_toString(string);
-  _logSyntacticAnalyzerPushAction(__func__, "%s", str);
+ProductionRhsRuleArray ProductionRhsRuleArray_push(ProductionRhsRuleArray array, ProductionRhsRule* productionRhsRule) {
+  char* str = ProductionRhsRule_toString(productionRhsRule);
+  _logSyntacticAnalyzerPushAction(__func__, "ProductionRhsRule(%s)", str);
   free(str);
-  ArrayElement ele = {.string = string};
+  ArrayElement ele = {.productionRhsRule = productionRhsRule};
   Array_push(array, ele);
   return array;
 }
 
-String String_new() {
-  _logSyntacticAnalyzerAction(__func__);
-  SymbolArray array = Array_new(INIT_CAP, SymbolArray_freeEle, StringElemenArrayElement_toString);
-
-  return array;
+ProductionRhsRule* ProductionRhsRuleSymbolSymbolSemanticAction(Symbol leftSymbol, Symbol rightSymbol) {
+  ProductionRhsRule* rule = safeMalloc(sizeof(ProductionRhsRule));
+  rule->type = SYMBOL_SYMBOL_T;
+  rule->leftSymbol = leftSymbol;
+  rule->rightSymbol = rightSymbol;
+  return rule;
 }
 
-String String_pushLambda(String array) {
-  _logSyntacticAnalyzerPushAction(__func__, "Symbol(󰘧)");
-  ArrayElement ele;
-  ele.stringElement = (StringElement){.type = LAMBDA_T};
-  Array_push(array, ele);
-  return array;
+ProductionRhsRule* ProductionRhsRuleSymbolSemanticAction(Symbol symbol) {
+  ProductionRhsRule* rule = safeMalloc(sizeof(ProductionRhsRule));
+  rule->type = SYMBOL_T;
+  rule->symbol = symbol;
+  return rule;
 }
 
-String String_pushSymbol(String array, Symbol symbol) {
-  _logSyntacticAnalyzerPushAction(__func__, "Symbol(%s)", symbol);
-  ArrayElement ele;
-  ele.stringElement = (StringElement){.symbol = symbol, .type = SYMBOL_T};
-  Array_push(array, ele);
-  return array;
+ProductionRhsRule* ProductionRhsRuleLambdaSemanticAction() {
+  ProductionRhsRule* rule = safeMalloc(sizeof(ProductionRhsRule));
+  rule->type = LAMBDA_T;
+  return rule;
 }

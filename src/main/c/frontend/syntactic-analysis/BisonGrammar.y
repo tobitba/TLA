@@ -36,8 +36,8 @@
   ProductionSet* productionSet;
   ProductionArray productions;
   Production* production;
-  ProductionRhsArray productionRhs;
-  SymbolArray string;
+  ProductionRhsRuleArray productionRhsRules;
+  ProductionRhsRule* productionRhsRule;
 }
 
 /**
@@ -80,8 +80,8 @@
 %type <productionSet> productionSet
 %type <productions> productions
 %type <production> production
-%type <productionRhs> productionRhs
-%type <string> string
+%type <productionRhsRules> productionRhsRules
+%type <productionRhsRule> productionRhsRule
 
 /**
  * Precedence and associativity.
@@ -136,16 +136,15 @@ productions: production                         { $$ = ProductionArray_new($1); 
   | productions[list] COMMA production[val]     { $$ = ProductionArray_push($list, $val); }
   ;
 
-production: SYMBOL[lhs] RIGHT_ARROW productionRhs[rhs]    { $$ = ProductionSemanticAction($lhs, $rhs); }
+production: SYMBOL[lhs] RIGHT_ARROW productionRhsRules[rhs]     { $$ = ProductionSemanticAction($lhs, $rhs); }
 
-productionRhs: string                           { $$ = ProductionRhsArray_new($1); }
-  | productionRhs[list] PIPE string[val]        { $$ = ProductionRhsArray_push($list, $val); }
+productionRhsRules: productionRhsRule                           { $$ = ProductionRhsRuleArray_new($1); }
+  | productionRhsRules[list] PIPE productionRhsRule[val]        { $$ = ProductionRhsRuleArray_push($list, $val); }
   ;
 
-string: LAMBDA                                  { $$ = String_new(); String_pushLambda($$); }
-  | SYMBOL                                      { $$ = String_new(); String_pushSymbol($$, $1); }
-  | string[list] LAMBDA                         { $$ = String_pushLambda($list); }
-  | string[list] SYMBOL[val]                    { $$ = String_pushSymbol($list, $val); }
+productionRhsRule: SYMBOL SYMBOL                                { $$ = ProductionRhsRuleSymbolSymbolSemanticAction($1, $2); }
+  | SYMBOL                                                      { $$ = ProductionRhsRuleSymbolSemanticAction($1); }
+  | LAMBDA                                                      { $$ = ProductionRhsRuleLambdaSemanticAction(); }
   ;
 
 %%

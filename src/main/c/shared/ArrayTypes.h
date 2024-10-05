@@ -7,8 +7,7 @@ typedef union ArrayElement {
   Sentence* sentence;
   Symbol symbol;
   Production* production;
-  StringElement stringElement;
-  String string;
+  ProductionRhsRule* productionRhsRule;
 } ArrayElement;
 
 #endif
