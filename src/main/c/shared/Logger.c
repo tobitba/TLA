@@ -1,6 +1,7 @@
 #include "Logger.h"
 #include "Environment.h"
 #include "String.h"
+#include "utils.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,10 +76,10 @@ static const char* _toContextString(const LoggingLevel loggingLevel) {
 /* PUBLIC FUNCTIONS */
 
 Logger* createLogger(char* name) {
-  Logger* logger = calloc(1, sizeof(Logger));
+  Logger* logger = safeMalloc(sizeof(Logger));
   logger->loggingLevel = _loggingLevelFromString(getStringOrDefault("LOGGING_LEVEL", "INFORMATION"));
   const size_t length = 1 + strlen(name);
-  logger->name = calloc(length, sizeof(char));
+  logger->name = safeCalloc(length, sizeof(char));
   strlcpy(logger->name, name, length);
   return logger;
 }

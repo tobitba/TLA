@@ -36,3 +36,15 @@ void exitWithErrno(int errnoVal, const char* functionName, const char* msg) {
 void exitInvalidArgument(const char* functionName, const char* msg) {
   exitWithErrno(EINVAL, functionName, msg);
 }
+
+void* safeMalloc(size_t size) {
+  void* ptr = malloc(size);
+  if (ptr == NULL) exitWithPerror(__func__, "@malloc error");
+  return ptr;
+}
+
+void* safeCalloc(size_t n, size_t size) {
+  void* ptr = calloc(n, size);
+  if (ptr == NULL) exitWithPerror(__func__, "@calloc error");
+  return ptr;
+}

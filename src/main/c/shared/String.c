@@ -99,7 +99,7 @@ char* concatenate(const unsigned int count, ...) {
     length += strlen(nextString);
   }
   va_end(arguments);
-  char* string = calloc(length, sizeof(char));
+  char* string = safeCalloc(length, sizeof(char));
   va_start(arguments, count);
   for (unsigned int k = 0; k < count; ++k) {
     const char* nextString = va_arg(arguments, const char*);
@@ -118,7 +118,7 @@ char* escape(const char* string) {
       length += 1;
     }
   }
-  char* escapedString = calloc(length, sizeof(char));
+  char* escapedString = safeCalloc(length, sizeof(char));
   char charToString[2] = {0, 0};
   for (unsigned int k = 0; 0 < string[k]; ++k) {
     if (iscntrl(string[k])) {
@@ -133,7 +133,7 @@ char* escape(const char* string) {
 
 char* indentation(const char character, const unsigned int level, const unsigned int size) {
   const unsigned int indentationLength = level * size;
-  char* indentation = calloc(1 + indentationLength, sizeof(char));
+  char* indentation = safeCalloc(1 + indentationLength, sizeof(char));
   for (int k = 0; k < indentationLength; ++k) {
     indentation[k] = character;
   }

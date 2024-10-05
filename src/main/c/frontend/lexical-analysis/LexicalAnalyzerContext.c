@@ -1,4 +1,5 @@
 #include "LexicalAnalyzerContext.h"
+#include "../../shared/utils.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -26,9 +27,9 @@ extern const char* const yytext;
 /* PUBLIC FUNCTIONS */
 
 LexicalAnalyzerContext* createLexicalAnalyzerContext() {
-  LexicalAnalyzerContext* lexicalAnalyzerContext = calloc(1, sizeof(LexicalAnalyzerContext));
+  LexicalAnalyzerContext* lexicalAnalyzerContext = safeMalloc(sizeof(LexicalAnalyzerContext));
   lexicalAnalyzerContext->length = yyleng;
-  lexicalAnalyzerContext->lexeme = calloc(1 + yyleng, sizeof(char));
+  lexicalAnalyzerContext->lexeme = safeCalloc(1 + yyleng, sizeof(char));
   lexicalAnalyzerContext->line = yylineno;
   lexicalAnalyzerContext->semanticValue = &yylval;
   lexicalAnalyzerContext->currentContext = flexCurrentContext();
