@@ -50,59 +50,72 @@ void _logIgnoredLexemeAction(const char* functionName, LexicalAnalyzerContext* l
 
 void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logIgnoredLexemeAction(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logIgnoredLexemeAction(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 void BeginSingleLineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logIgnoredLexemeAction(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 void EndSingleLineCommentLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logIgnoredLexemeAction(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 void IgnoredLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logIgnoredLexemeAction(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 void BeginGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 void EndGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 void BeginSetDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 void EndSetDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 Token TokenLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
   lexicalAnalyzerContext->semanticValue->token = token;
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
   return token;
 }
 
 Token IdLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
   lexicalAnalyzerContext->semanticValue->id = lexicalAnalyzerContext->lexeme;
+  free(lexicalAnalyzerContext);
   return ID;
 }
 
 Token SymbolLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
   lexicalAnalyzerContext->semanticValue->symbol = lexicalAnalyzerContext->lexeme;
+  free(lexicalAnalyzerContext);
   return SYMBOL;
 }
 
 Token UnknownLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
   return UNKNOWN;
 }

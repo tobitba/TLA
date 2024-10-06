@@ -55,6 +55,7 @@ void GrammarDefinition_free(GrammarDefinition* grammarDefinition) {
   free(grammarDefinition->id);
   free(grammarDefinition->terminalSetId);
   free(grammarDefinition->nonTerminalSetId);
+  free(grammarDefinition->productionSetId);
   free(grammarDefinition->initialSymbolId);
   free(grammarDefinition);
 }
@@ -62,12 +63,14 @@ void GrammarDefinition_free(GrammarDefinition* grammarDefinition) {
 void SymbolSetBinding_free(SymbolSetBinding* symbolSetBinding) {
   logDebugging(_logger, "Executing destructor: %s", __func__);
   Array_free(symbolSetBinding->symbols);
+  free(symbolSetBinding->id);
   free(symbolSetBinding);
 }
 
 void ProductionSetBinding_free(ProductionSetBinding* productionSetBinding) {
   logDebugging(_logger, "Executing destructor: %s", __func__);
   Array_free(productionSetBinding->productions);
+  free(productionSetBinding->id);
   free(productionSetBinding);
 }
 
@@ -96,6 +99,7 @@ void ProductionRhsRuleArray_freeEle(ArrayElement ele) {
   default:
     break;
   }
+  free(ele.productionRhsRule);
 }
 
 // String conversions
