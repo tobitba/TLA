@@ -107,8 +107,8 @@ sentences: sentence                             { $$ = SentenceArray_new($1); }
   ;
 
 sentence: grammarDefinition                     { $$ = GrammarDefinitionSentenceSemanticAction($1); }
-  | symbolSetBinding                                   { $$ = SymbolSetBindingSentenceSemanticAction($1); }
-  | productionSetBinding                               { $$ = ProductionSetBindingSentenceSemanticAction($1); }
+  | symbolSetBinding                            { $$ = SymbolSetBindingSentenceSemanticAction($1); }
+  | productionSetBinding                        { $$ = ProductionSetBindingSentenceSemanticAction($1); }
   ;
 
 grammarDefinition:
