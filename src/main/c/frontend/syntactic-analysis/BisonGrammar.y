@@ -126,6 +126,7 @@ symbolSetBinding:
   ID[setId] EQUALS symbolSet[set]                               { $$ = SymbolSetBindingSemanticAction($setId, $set); }
 
 symbolSet: BRACES_OPEN symbols[values] BRACES_CLOSE             { $$ = $values; }
+  | BRACES_OPEN symbols[values] COMMA BRACES_CLOSE              { $$ = $values; }
   | symbolSet[left] UNION symbolSet[right]                      { $$ = SymbolSetUnion($left, $right); }
   ;
 
@@ -137,6 +138,7 @@ productionSetBinding:
   ID[setId] EQUALS productionSet[set]                           { $$ = ProductionSetBindingSemanticAction($setId, $set); }
 
 productionSet: BRACES_OPEN productions[values] BRACES_CLOSE     { $$ = $values; }
+  | BRACES_OPEN productions[values] COMMA BRACES_CLOSE          { $$ = $values; }
   | productionSet[left] UNION productionSet[right]              { $$ = ProductionSetUnion($left, $right); }
   ;
 
