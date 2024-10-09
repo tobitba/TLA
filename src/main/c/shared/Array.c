@@ -50,7 +50,7 @@ void Array_free(Array array) {
   if (array == NULL) ARRAY_INSTANCE_NULL_EXIT;
 
   if (array->freeEleFn != NULL) {
-    for (int32_t i = 0; i < array->length; ++i) array->freeEleFn(Array_get(array, i));
+    for (int32_t i = 0; i < array->length; ++i) array->freeEleFn(array->values[i]);
   }
 
   free(array->values);
@@ -77,7 +77,7 @@ void Array_push(Array array, ArrayElement ele) {
 void Array_pop(Array array) {
   if (array == NULL) ARRAY_INSTANCE_NULL_EXIT;
   if (array->length == 0) return;
-  if (array->freeEleFn != NULL) array->freeEleFn(Array_get(array, -1));
+  if (array->freeEleFn != NULL) array->freeEleFn(array->values[array->length - 1]);
   --array->length;
 }
 
@@ -88,8 +88,8 @@ size_t Array_getLen(Array array) {
 
 void Array_concat(Array dest, Array src) {
   if (dest == NULL) exitInvalidArgument(__func__, "Destination can't be NULL");
-  for (int i = 0; i < Array_getLen(src); ++i) {
-    Array_push(dest, Array_get(src, i));
+  for (int i = 0; i < src->length; ++i) {
+    Array_push(dest, src->values[i]);
   }
   free(src->values);
   free(src);
@@ -100,7 +100,7 @@ char* Array_toString(Array array) {
   if (array->toStringEleFn == NULL) exitInvalidArgument(__func__, "print element function not set");
   char* str = safeAsprintf("[ ");
   for (int i = 0; i < array->length; ++i) {
-    char* eleStr = array->toStringEleFn(Array_get(array, i));
+    char* eleStr = array->toStringEleFn(array->values[i]);
     char* newStr = safeAsprintf("%s%s%s", str, eleStr, i < array->length - 1 ? ", " : " ]");
     free(str);
     free(eleStr);
