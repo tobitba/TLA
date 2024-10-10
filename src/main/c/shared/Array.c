@@ -1,5 +1,5 @@
 #include "Array.h"
-#include "ArrayTypes.h"
+#include "ArrayElement.h"
 #include "Logger.h"
 #include "String.h"
 #include "utils.h"

@@ -1,7 +1,7 @@
 #ifndef AST_UTILS_H
 #define AST_UTILS_H
 
-#include "../../shared/ArrayTypes.h"
+#include "../../shared/ArrayElement.h"
 #include "AbstractSyntaxTree.h"
 
 void initializeASTUtilsModule();

@@ -3,7 +3,7 @@
 
 // AbstractSyntaxTree.h has to be included because clang is stupid when dealing with forward declarations...
 #include "../../c/frontend/syntactic-analysis/AbstractSyntaxTree.h"
-#include "ArrayTypes.h"
+#include "ArrayElement.h"
 #include <stddef.h>
 #include <stdint.h>
 

@@ -1,5 +1,5 @@
-#ifndef ARRAY_TYPES_H
-#define ARRAY_TYPES_H
+#ifndef ARRAY_ELEMENT_H
+#define ARRAY_ELEMENT_H
 
 #include "../frontend/syntactic-analysis/AbstractSyntaxTree.h"
 

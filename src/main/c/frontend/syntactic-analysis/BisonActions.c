@@ -1,6 +1,6 @@
 #include "BisonActions.h"
 #include "../../shared/Array.h"
-#include "../../shared/ArrayTypes.h"
+#include "../../shared/ArrayElement.h"
 #include "../../shared/CompilerState.h"
 #include "../../shared/Logger.h"
 #include "../../shared/String.h"
