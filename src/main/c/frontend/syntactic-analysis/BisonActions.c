@@ -236,7 +236,7 @@ ProductionRhsRule* ProductionRhsRuleLambda_new() {
 SymbolSet SymbolSetUnion(SymbolSet left, SymbolSet right) {
   char* leftStr = Set_toString(left);
   char* rightStr = Set_toString(right);
-  _logSyntacticAnalyzerPushAction(__func__, "SymbolArray(%s) ∪ SymbolArray(%s)", leftStr, rightStr);
+  _logSyntacticAnalyzerPushAction(__func__, "SymbolSet(%s) ∪ SymbolSet(%s)", leftStr, rightStr);
   free(leftStr);
   free(rightStr);
   Set_union(left, right);
@@ -246,7 +246,7 @@ SymbolSet SymbolSetUnion(SymbolSet left, SymbolSet right) {
 ProductionSet ProductionSetUnion(ProductionSet left, ProductionSet right) {
   char* leftStr = Set_toString(left);
   char* rightStr = Set_toString(right);
-  _logSyntacticAnalyzerPushAction(__func__, "ProductionArray(%s) ∪ ProductionArray(%s)", leftStr, rightStr);
+  _logSyntacticAnalyzerPushAction(__func__, "ProductionSet(%s) ∪ ProductionSet(%s)", leftStr, rightStr);
   free(leftStr);
   free(rightStr);
   SetIterator rightIter = Set_iterator(right);

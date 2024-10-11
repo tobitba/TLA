@@ -219,15 +219,15 @@ char* ProductionRhsRule_toString(ProductionRhsRule* productionRhsRule) {
   switch (productionRhsRule->type) {
   case SYMBOL_SYMBOL_T:
     str = safeAsprintf(
-      "{ " COLORIZE_SYMBOL("%s") ", " COLORIZE_SYMBOL("%s") " }", productionRhsRule->leftSymbol.symbol,
+      "[ " COLORIZE_SYMBOL("%s") ", " COLORIZE_SYMBOL("%s") " ]", productionRhsRule->leftSymbol.symbol,
       productionRhsRule->rightSymbol
     );
     break;
   case SYMBOL_T:
-    str = safeAsprintf("{ " COLORIZE_SYMBOL("%s") " }", productionRhsRule->symbol.symbol);
+    str = safeAsprintf("[ " COLORIZE_SYMBOL("%s") " ]", productionRhsRule->symbol.symbol);
     break;
   case LAMBDA_T:
-    str = safeAsprintf("{ " COLORIZE_SYMBOL("󰘧") " }");
+    str = safeAsprintf("[ " COLORIZE_SYMBOL("󰘧") " ]");
     break;
   }
   return str;
