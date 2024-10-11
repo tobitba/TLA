@@ -9,6 +9,7 @@ void shutdownAbstractSyntaxTreeModule();
 
 // Forward declaration of Array to avoid circular references.
 typedef struct ArrayCDT* Array;
+typedef struct SetCDT* Set;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -22,8 +23,8 @@ typedef enum { SYMBOL_SYMBOL_T, SYMBOL_T, LAMBDA_T } ProductionRhsRuleType;
  * This typedefs allows self-referencing types.
  */
 
-typedef char* Id;
-typedef char* Symbol;
+typedef struct Id Id;
+typedef struct Symbol Symbol;
 
 typedef struct Program Program;
 typedef struct Sentence Sentence;
@@ -34,9 +35,19 @@ typedef struct Production Production;
 typedef struct ProductionRhsRule ProductionRhsRule;
 
 typedef Array SentenceArray;
-typedef Array SymbolArray;
-typedef Array ProductionArray;
-typedef Array ProductionRhsRuleArray;
+typedef Set SymbolSet;
+typedef Set ProductionSet;
+typedef Set ProductionRhsRuleSet;
+
+struct Id {
+  char* id;
+  int length;
+};
+
+struct Symbol {
+  char* symbol;
+  int length;
+};
 
 struct Program {
   SentenceArray sentences;
@@ -52,12 +63,12 @@ struct GrammarDefinition {
 
 struct SymbolSetBinding {
   Id id;
-  SymbolArray symbols;
+  SymbolSet symbols;
 };
 
 struct ProductionSetBinding {
   Id id;
-  ProductionArray productions;
+  ProductionSet productions;
 };
 
 struct Sentence {
@@ -71,7 +82,7 @@ struct Sentence {
 
 struct Production {
   Symbol lhs;
-  ProductionRhsRuleArray rhs;
+  ProductionRhsRuleSet rhs;
 };
 
 struct ProductionRhsRule {

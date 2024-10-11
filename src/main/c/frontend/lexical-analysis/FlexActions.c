@@ -102,14 +102,16 @@ Token TokenLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token to
 
 Token IdLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
-  lexicalAnalyzerContext->semanticValue->id = lexicalAnalyzerContext->lexeme;
+  lexicalAnalyzerContext->semanticValue->id.id = lexicalAnalyzerContext->lexeme;
+  lexicalAnalyzerContext->semanticValue->id.length = lexicalAnalyzerContext->length;
   free(lexicalAnalyzerContext);
   return ID;
 }
 
 Token SymbolLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
-  lexicalAnalyzerContext->semanticValue->symbol = lexicalAnalyzerContext->lexeme;
+  lexicalAnalyzerContext->semanticValue->symbol.symbol = lexicalAnalyzerContext->lexeme;
+  lexicalAnalyzerContext->semanticValue->symbol.length = lexicalAnalyzerContext->length;
   free(lexicalAnalyzerContext);
   return SYMBOL;
 }

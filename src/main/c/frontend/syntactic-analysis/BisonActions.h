@@ -17,27 +17,33 @@ void shutdownBisonActionsModule();
 Program* ProgramSemanticAction(CompilerState* compilerState, SentenceArray sentences);
 SentenceArray SentenceArray_new(Sentence* sentence);
 SentenceArray SentenceArray_push(SentenceArray array, Sentence* sentence);
-Sentence* GrammarDefinitionSentenceSemanticAction(GrammarDefinition* grammarDefinition);
-Sentence* SymbolSetBindingSentenceSemanticAction(SymbolSetBinding* symbolSetBinding);
-Sentence* ProductionSetBindingSentenceSemanticAction(ProductionSetBinding* productionSetBinding);
-GrammarDefinition* GrammarDefinitionSemanticAction(
-  Id grammarId, Id terminalSetId, Id nonTerminalSetId, Id productionSetId, Id initialSymbolId
-);
-SymbolSetBinding* SymbolSetBindingSemanticAction(Id setId, SymbolArray symbols);
-SymbolArray SymbolArray_new(Symbol symbol);
-SymbolArray SymbolArray_push(SymbolArray array, Symbol symbol);
-ProductionSetBinding* ProductionSetBindingSemanticAction(Id setId, ProductionArray productions);
-ProductionArray ProductionArray_new(Production* production);
-ProductionArray ProductionArray_push(ProductionArray array, Production* production);
-Production* ProductionSemanticAction(Symbol lhs, ProductionRhsRuleArray productionRhsRules);
-ProductionRhsRuleArray ProductionRhsRuleArray_new(ProductionRhsRule* productionRhsRule);
-ProductionRhsRuleArray ProductionRhsRuleArray_push(ProductionRhsRuleArray array, ProductionRhsRule* productionRhsRule);
-ProductionRhsRule* ProductionRhsRuleSymbolSymbolSemanticAction(Symbol leftSymbol, Symbol rightSymbol);
-ProductionRhsRule* ProductionRhsRuleSymbolSemanticAction(Symbol symbol);
-ProductionRhsRule* ProductionRhsRuleLambdaSemanticAction();
+Sentence* GrammarDefinitionSentence_new(GrammarDefinition* grammarDefinition);
+Sentence* SymbolSetBindingSentence_new(SymbolSetBinding* symbolSetBinding);
+Sentence* ProductionSetBindingSentence_new(ProductionSetBinding* productionSetBinding);
+
+GrammarDefinition*
+GrammarDefinition_new(Id grammarId, Id terminalSetId, Id nonTerminalSetId, Id productionSetId, Id initialSymbolId);
+
+SymbolSetBinding* SymbolSetBinding_new(Id setId, SymbolSet symbols);
+
+SymbolSet SymbolSet_new(Symbol symbol);
+SymbolSet SymbolSet_add(SymbolSet array, Symbol symbol);
+
+ProductionSetBinding* ProductionSetBinding_new(Id setId, ProductionSet productions);
+
+ProductionSet ProductionSet_new(Production* production);
+ProductionSet ProductionSet_add(ProductionSet set, Production* production);
+
+Production* Production_new(Symbol lhs, ProductionRhsRuleSet productionRhsRules);
+
+ProductionRhsRuleSet ProductionRhsRuleSet_new(ProductionRhsRule* productionRhsRule);
+ProductionRhsRuleSet ProductionRhsRuleSet_add(ProductionRhsRuleSet set, ProductionRhsRule* rule);
+ProductionRhsRule* ProductionRhsRuleSymbolSymbol_new(Symbol leftSymbol, Symbol rightSymbol);
+ProductionRhsRule* ProductionRhsRuleSymbol_new(Symbol symbol);
+ProductionRhsRule* ProductionRhsRuleLambda_new();
 
 // Set operations
-SymbolArray SymbolSetUnion(SymbolArray left, SymbolArray right);
-ProductionArray ProductionSetUnion(ProductionArray left, ProductionArray right);
+SymbolSet SymbolSetUnion(SymbolSet left, SymbolSet right);
+ProductionSet ProductionSetUnion(ProductionSet left, ProductionSet right);
 
 #endif

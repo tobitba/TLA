@@ -2,26 +2,44 @@
 #define AST_UTILS_H
 
 #include "../../shared/ArrayElement.h"
+#include "../../shared/SetElement.h"
 #include "AbstractSyntaxTree.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 void initializeASTUtilsModule();
 void shutdownASTUtilsModule();
+
+//////////// Program ////////////////
 void Program_free(Program* program);
+//////////// Sentences //////////////
 void SentenceArray_freeEle(ArrayElement ele);
-void GrammarDefinition_free(GrammarDefinition* grammarDefinition);
-void SymbolSetBinding_free(SymbolSetBinding* symbolSetBinding);
-void ProductionSetBinding_free(ProductionSetBinding* productionSetBinding);
-void SymbolArray_freeEle(ArrayElement ele);
-void ProductionArray_freeEle(ArrayElement ele);
-void ProductionRhsRuleArray_freeEle(ArrayElement ele);
-char* SymbolArrayElement_toString(ArrayElement ele);
-char* Production_toString(Production* production);
-char* ProductionArrayElement_toString(ArrayElement ele);
-char* ProductionRhsRule_toString(ProductionRhsRule* productionRhsRule);
-char* ProductionRhsRuleArrayElement_toString(ArrayElement ele);
-char* GrammarDefinition_toString(GrammarDefinition* grammarDefinition);
-char* SymbolSetBinding_toString(SymbolSetBinding* symbolSetBinding);
-char* ProductionSetBinding_toString(ProductionSetBinding* productionSetBinding);
 char* Sentence_toString(Sentence* sentence);
+//////////// Grammars ///////////////
+void GrammarDefinition_free(GrammarDefinition* grammarDefinition);
+char* GrammarDefinition_toString(GrammarDefinition* grammarDefinition);
+//////////// Symbols ////////////////
+uint32_t Symbol_hashEle(SetElement ele);
+bool Symbol_equalsEle(SetElement ele1, SetElement ele2);
+void Symbol_freeEle(SetElement ele);
+char* Symbol_toStringEle(SetElement ele);
+
+void SymbolSetBinding_free(SymbolSetBinding* symbolSetBinding);
+char* SymbolSetBinding_toString(SymbolSetBinding* symbolSetBinding);
+//////////// Productions ////////////
+uint32_t Production_hashEle(SetElement ele);
+bool Production_equalsEle(SetElement ele1, SetElement ele2);
+void Production_freeEle(SetElement ele);
+char* Production_toString(Production* production);
+char* Production_toStringEle(SetElement ele);
+
+void ProductionSetBinding_free(ProductionSetBinding* productionSetBinding);
+char* ProductionSetBinding_toString(ProductionSetBinding* productionSetBinding);
+//////////// Productions Rhs ////////////
+uint32_t ProductionRhsRule_hashEle(SetElement ele);
+bool ProductionRhsRule_equalsEle(SetElement ele1, SetElement ele2);
+void ProductionRhsRule_freeEle(SetElement ele);
+char* ProductionRhsRule_toString(ProductionRhsRule* productionRhsRule);
+char* ProductionRhsRule_toStringEle(SetElement ele);
 
 #endif

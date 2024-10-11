@@ -16,7 +16,8 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
 	message(NOTICE "The C compiler is GCC.")
 
 	# Options for GCC.
-	add_compile_options(-static-libgcc -std=gnu99 -O3 -fsanitize=address)
+	add_compile_options(-static-libgcc -std=gnu99 -fsanitize=address)
+  add_compile_options(-O3)
   # add_compile_options(-g)
   add_link_options(-fsanitize=address)
 
@@ -68,7 +69,9 @@ add_executable(Compiler
 	src/main/c/shared/Logger.c
 	src/main/c/shared/String.c
   src/main/c/shared/Array.c
+  src/main/c/shared/Set.c
   src/main/c/shared/utils.c
+  src/main/c/shared/hashUtils.c
 	# Add more *.c files if needed (otherwise, they won't be compiled).
 	# ...
 )

@@ -88,6 +88,7 @@ size_t Array_getLen(Array array) {
 
 void Array_concat(Array dest, Array src) {
   if (dest == NULL) exitInvalidArgument(__func__, "Destination can't be NULL");
+  if (src == NULL) return;
   for (int i = 0; i < src->length; ++i) {
     Array_push(dest, src->values[i]);
   }

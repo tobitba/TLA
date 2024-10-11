@@ -2,10 +2,16 @@
 #include "../../shared/Array.h"
 #include "../../shared/ArrayElement.h"
 #include "../../shared/Logger.h"
+#include "../../shared/Set.h"
+#include "../../shared/SetElement.h"
 #include "../../shared/String.h"
+#include "../../shared/hashUtils.h"
 #include "AbstractSyntaxTree.h"
 #include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 static Logger* _logger = NULL;
 
@@ -26,13 +32,15 @@ void shutdownASTUtilsModule() {
   }
 }
 
-// Memory deallocation
+//////////// Program ////////////////
 
 void Program_free(Program* program) {
   logDebugging(_logger, "Executing destructor: %s", __func__);
   Array_free(program->sentences);
   free(program);
 }
+
+//////////// Sentences //////////////
 
 void SentenceArray_freeEle(ArrayElement ele) {
   logDebugging(_logger, "Executing destructor: %s", __func__);
@@ -50,126 +58,6 @@ void SentenceArray_freeEle(ArrayElement ele) {
   free(ele.sentence);
 }
 
-void GrammarDefinition_free(GrammarDefinition* grammarDefinition) {
-  logDebugging(_logger, "Executing destructor: %s", __func__);
-  free(grammarDefinition->id);
-  free(grammarDefinition->terminalSetId);
-  free(grammarDefinition->nonTerminalSetId);
-  free(grammarDefinition->productionSetId);
-  free(grammarDefinition->initialSymbolId);
-  free(grammarDefinition);
-}
-
-void SymbolSetBinding_free(SymbolSetBinding* symbolSetBinding) {
-  logDebugging(_logger, "Executing destructor: %s", __func__);
-  Array_free(symbolSetBinding->symbols);
-  free(symbolSetBinding->id);
-  free(symbolSetBinding);
-}
-
-void ProductionSetBinding_free(ProductionSetBinding* productionSetBinding) {
-  logDebugging(_logger, "Executing destructor: %s", __func__);
-  Array_free(productionSetBinding->productions);
-  free(productionSetBinding->id);
-  free(productionSetBinding);
-}
-
-void SymbolArray_freeEle(ArrayElement ele) {
-  logDebugging(_logger, "Executing destructor: %s", __func__);
-  free(ele.symbol);
-}
-
-void ProductionArray_freeEle(ArrayElement ele) {
-  logDebugging(_logger, "Executing destructor: %s", __func__);
-  free(ele.production->lhs);
-  Array_free(ele.production->rhs);
-  free(ele.production);
-}
-
-void ProductionRhsRuleArray_freeEle(ArrayElement ele) {
-  logDebugging(_logger, "Executing destructor: %s", __func__);
-  switch (ele.productionRhsRule->type) {
-  case SYMBOL_SYMBOL_T:
-    free(ele.productionRhsRule->leftSymbol);
-    free(ele.productionRhsRule->rightSymbol);
-    break;
-  case SYMBOL_T:
-    free(ele.productionRhsRule->symbol);
-    break;
-  default:
-    break;
-  }
-  free(ele.productionRhsRule);
-}
-
-// String conversions
-
-char* SymbolArrayElement_toString(ArrayElement ele) {
-  char* str = safeAsprintf(COLORIZE_SYMBOL("%s"), ele.symbol);
-  return str;
-}
-
-char* Production_toString(Production* production) {
-  char* rhs = Array_toString(production->rhs);
-  char* str = safeAsprintf(COLORIZE_SYMBOL("%s") " -> %s", production->lhs, rhs);
-  free(rhs);
-  return str;
-}
-
-char* ProductionArrayElement_toString(ArrayElement ele) {
-  return Production_toString(ele.production);
-}
-
-char* ProductionRhsRule_toString(ProductionRhsRule* productionRhsRule) {
-  char* str;
-  switch (productionRhsRule->type) {
-  case SYMBOL_SYMBOL_T:
-    str = safeAsprintf(
-      "[ " COLORIZE_SYMBOL("%s") ", " COLORIZE_SYMBOL("%s") " ]", productionRhsRule->leftSymbol,
-      productionRhsRule->rightSymbol
-    );
-    break;
-  case SYMBOL_T:
-    str = safeAsprintf("[ " COLORIZE_SYMBOL("%s") " ]", productionRhsRule->symbol);
-    break;
-  case LAMBDA_T:
-    str = safeAsprintf("[ " COLORIZE_SYMBOL("󰘧") " ]");
-    break;
-  }
-  return str;
-}
-
-char* ProductionRhsRuleArrayElement_toString(ArrayElement ele) {
-  return ProductionRhsRule_toString(ele.productionRhsRule);
-}
-
-char* GrammarDefinition_toString(GrammarDefinition* grammarDefinition) {
-  char* str = safeAsprintf(
-    "GrammarDefinition{ id: " COLORIZE_ID("%s") ", terminalSetId: " COLORIZE_ID("%s"
-    ) ", nonTerminalSetId: " COLORIZE_ID("%s") ", productionSetId: " COLORIZE_ID("%s"
-    ) ", initialSymbolId: " COLORIZE_ID("%s") " }",
-    grammarDefinition->id, grammarDefinition->terminalSetId, grammarDefinition->nonTerminalSetId,
-    grammarDefinition->productionSetId, grammarDefinition->initialSymbolId
-  );
-  return str;
-}
-
-char* SymbolSetBinding_toString(SymbolSetBinding* symbolSetBinding) {
-  char* symbols = Array_toString(symbolSetBinding->symbols);
-  char* str = safeAsprintf("SymbolSetBinding{ id: " COLORIZE_ID("%s") ", symbols: %s }", symbolSetBinding->id, symbols);
-  free(symbols);
-  return str;
-}
-
-char* ProductionSetBinding_toString(ProductionSetBinding* productionSetBinding) {
-  char* productions = Array_toString(productionSetBinding->productions);
-  char* str = safeAsprintf(
-    "ProductionSetBinding{ id: " COLORIZE_ID("%s") ", productions: %s }", productionSetBinding->id, productions
-  );
-  free(productions);
-  return str;
-}
-
 char* Sentence_toString(Sentence* sentence) {
   char* str;
   switch (sentence->type) {
@@ -183,5 +71,223 @@ char* Sentence_toString(Sentence* sentence) {
     str = ProductionSetBinding_toString(sentence->productionSetBinding);
     break;
   }
+  return str;
+}
+
+//////////// Grammars ///////////////
+
+void GrammarDefinition_free(GrammarDefinition* grammarDefinition) {
+  logDebugging(_logger, "Executing destructor: %s", __func__);
+  free(grammarDefinition->id.id);
+  free(grammarDefinition->terminalSetId.id);
+  free(grammarDefinition->nonTerminalSetId.id);
+  free(grammarDefinition->productionSetId.id);
+  free(grammarDefinition->initialSymbolId.id);
+  free(grammarDefinition);
+}
+
+char* GrammarDefinition_toString(GrammarDefinition* grammarDefinition) {
+  char* str = safeAsprintf(
+    "GrammarDefinition{ id: " COLORIZE_ID("%s") ", terminalSetId: " COLORIZE_ID("%s"
+    ) ", nonTerminalSetId: " COLORIZE_ID("%s") ", productionSetId: " COLORIZE_ID("%s"
+    ) ", initialSymbolId: " COLORIZE_ID("%s") " }",
+    grammarDefinition->id.id, grammarDefinition->terminalSetId.id, grammarDefinition->nonTerminalSetId.id,
+    grammarDefinition->productionSetId.id, grammarDefinition->initialSymbolId.id
+  );
+  return str;
+}
+
+//////////// Symbols ////////////////
+
+uint32_t Symbol_hash(Symbol symbol) {
+  return murmurHash3(1, symbol.symbol, symbol.length);
+}
+
+uint32_t Symbol_hashEle(SetElement ele) {
+  return Symbol_hash(ele.symbol);
+}
+
+bool Symbol_equals(Symbol symbol1, Symbol symbol2) {
+  return symbol1.length == symbol2.length && strcmp(symbol1.symbol, symbol2.symbol) == 0;
+}
+
+bool Symbol_equalsEle(SetElement ele1, SetElement ele2) {
+  return Symbol_equals(ele1.symbol, ele2.symbol);
+}
+
+void Symbol_freeEle(SetElement ele) {
+  logDebugging(_logger, "Executing destructor: %s", __func__);
+  free(ele.symbol.symbol);
+}
+
+char* Symbol_toString(Symbol symbol) {
+  char* str = safeAsprintf(COLORIZE_SYMBOL("%s"), symbol.symbol);
+  return str;
+}
+
+char* Symbol_toStringEle(SetElement ele) {
+  return Symbol_toString(ele.symbol);
+}
+
+void SymbolSetBinding_free(SymbolSetBinding* symbolSetBinding) {
+  logDebugging(_logger, "Executing destructor: %s", __func__);
+  Set_free(symbolSetBinding->symbols);
+  free(symbolSetBinding->id.id);
+  free(symbolSetBinding);
+}
+
+char* SymbolSetBinding_toString(SymbolSetBinding* symbolSetBinding) {
+  char* symbols = Set_toString(symbolSetBinding->symbols);
+  char* str =
+    safeAsprintf("SymbolSetBinding{ id: " COLORIZE_ID("%s") ", symbols: %s }", symbolSetBinding->id.id, symbols);
+  free(symbols);
+  return str;
+}
+
+//////////// Production Rhs ////////////
+
+uint32_t ProductionRhsRule_hash(ProductionRhsRule* rule) {
+  if (rule == NULL) return 0;
+  switch (rule->type) {
+  case SYMBOL_SYMBOL_T:
+    return murmurHash3(
+      3, &rule->type, sizeof(ProductionRhsRuleType), rule->leftSymbol.symbol, rule->leftSymbol.length,
+      rule->rightSymbol.symbol, rule->rightSymbol.length
+    );
+    break;
+  case SYMBOL_T:
+    return murmurHash3(2, &rule->type, sizeof(ProductionRhsRuleType), rule->symbol.symbol, rule->symbol.length);
+    break;
+  case LAMBDA_T:
+    return murmurHash3(1, &rule->type, sizeof(ProductionRhsRuleType));
+    break;
+  }
+}
+
+uint32_t ProductionRhsRule_hashEle(SetElement ele) {
+  return ProductionRhsRule_hash(ele.productionRhsRule);
+}
+
+bool ProductionRhsRule_equals(ProductionRhsRule* rule1, ProductionRhsRule* rule2) {
+  if (rule1 == rule2) return true;
+  if (rule1 == NULL || rule2 == NULL) return false;
+
+  bool cmp = rule1->type == rule2->type;
+
+  if (cmp) {
+    switch (rule1->type) {
+    case SYMBOL_SYMBOL_T:
+      cmp = strcmp(rule1->leftSymbol.symbol, rule2->leftSymbol.symbol) == 0;
+      if (cmp) cmp = strcmp(rule1->rightSymbol.symbol, rule2->rightSymbol.symbol) == 0;
+      break;
+    case SYMBOL_T:
+      cmp = strcmp(rule1->symbol.symbol, rule2->symbol.symbol) == 0;
+      break;
+    case LAMBDA_T:
+      break;
+    }
+  }
+  return cmp;
+}
+
+bool ProductionRhsRule_equalsEle(SetElement ele1, SetElement ele2) {
+  return ProductionRhsRule_equals(ele1.productionRhsRule, ele2.productionRhsRule);
+}
+
+void ProductionRhsRule_free(ProductionRhsRule* rule) {
+  logDebugging(_logger, "Executing destructor: %s", __func__);
+  switch (rule->type) {
+  case SYMBOL_SYMBOL_T:
+    free(rule->leftSymbol.symbol);
+    free(rule->rightSymbol.symbol);
+    break;
+  case SYMBOL_T:
+    free(rule->symbol.symbol);
+    break;
+  case LAMBDA_T:
+    break;
+  }
+  free(rule);
+}
+
+void ProductionRhsRule_freeEle(SetElement ele) {
+  ProductionRhsRule_free(ele.productionRhsRule);
+}
+
+char* ProductionRhsRule_toString(ProductionRhsRule* productionRhsRule) {
+  char* str;
+  switch (productionRhsRule->type) {
+  case SYMBOL_SYMBOL_T:
+    str = safeAsprintf(
+      "{ " COLORIZE_SYMBOL("%s") ", " COLORIZE_SYMBOL("%s") " }", productionRhsRule->leftSymbol.symbol,
+      productionRhsRule->rightSymbol
+    );
+    break;
+  case SYMBOL_T:
+    str = safeAsprintf("{ " COLORIZE_SYMBOL("%s") " }", productionRhsRule->symbol.symbol);
+    break;
+  case LAMBDA_T:
+    str = safeAsprintf("{ " COLORIZE_SYMBOL("󰘧") " }");
+    break;
+  }
+  return str;
+}
+
+char* ProductionRhsRule_toStringEle(SetElement ele) {
+  return ProductionRhsRule_toString(ele.productionRhsRule);
+}
+
+//////////// Productions ////////////
+
+uint32_t Production_hash(Production* production) {
+  if (production == NULL) return 0;
+  return murmurHash3(1, production->lhs.symbol, production->lhs.length);
+}
+
+uint32_t Production_hashEle(SetElement ele) {
+  return Production_hash(ele.production);
+}
+
+bool Production_equals(Production* prod1, Production* prod2) {
+  if (prod1 == prod2) return true;
+  if (prod1 == NULL || prod2 == NULL) return false;
+  return strcmp(prod1->lhs.symbol, prod2->lhs.symbol) == 0;
+}
+
+bool Production_equalsEle(SetElement ele1, SetElement ele2) {
+  return Production_equals(ele1.production, ele2.production);
+}
+
+void Production_freeEle(SetElement ele) {
+  logDebugging(_logger, "Executing destructor: %s", __func__);
+  free(ele.production->lhs.symbol);
+  Set_free(ele.production->rhs);
+  free(ele.production);
+}
+
+char* Production_toString(Production* production) {
+  char* rhs = Set_toString(production->rhs);
+  char* str = safeAsprintf(COLORIZE_SYMBOL("%s") " -> %s", production->lhs.symbol, rhs);
+  free(rhs);
+  return str;
+}
+
+char* Production_toStringEle(SetElement ele) {
+  return Production_toString(ele.production);
+}
+
+void ProductionSetBinding_free(ProductionSetBinding* productionSetBinding) {
+  logDebugging(_logger, "Executing destructor: %s", __func__);
+  Set_free(productionSetBinding->productions);
+  free(productionSetBinding->id.id);
+  free(productionSetBinding);
+}
+
+char* ProductionSetBinding_toString(ProductionSetBinding* productionSetBinding) {
+  char* productions = Set_toString(productionSetBinding->productions);
+  char* str = safeAsprintf(
+    "ProductionSetBinding{ id: " COLORIZE_ID("%s") ", productions: %s }", productionSetBinding->id.id, productions
+  );
+  free(productions);
   return str;
 }

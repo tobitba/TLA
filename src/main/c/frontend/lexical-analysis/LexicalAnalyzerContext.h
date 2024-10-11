@@ -6,7 +6,7 @@
  */
 typedef struct {
   unsigned int currentContext;
-  unsigned int length;
+  int length;
   char* lexeme;
   unsigned int line;
   union SemanticValue* semanticValue;

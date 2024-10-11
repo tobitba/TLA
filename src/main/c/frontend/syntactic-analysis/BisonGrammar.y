@@ -5,6 +5,8 @@
 #include "BisonActions.h"
 #include "./SyntacticAnalyzer.h"
 #include "./AbstractSyntaxTree.h"
+#include "../../shared/Array.h"
+#include <stdio.h>
 
 %}
 
@@ -32,30 +34,15 @@
   Sentence* sentence;
   GrammarDefinition* grammarDefinition;
   SymbolSetBinding* symbolSetBinding;
-  SymbolArray symbolSet;
-  SymbolArray symbols;
+  SymbolSet symbolSet;
+  SymbolSet symbols;
   ProductionSetBinding* productionSetBinding;
-  ProductionArray productionSet;
-  ProductionArray productions;
+  ProductionSet productionSet;
+  ProductionSet productions;
   Production* production;
-  ProductionRhsRuleArray productionRhsRules;
+  ProductionRhsRuleSet productionRhsRules;
   ProductionRhsRule* productionRhsRule;
 }
-
-/**
- * Destructors. This functions are executed after the parsing ends, so if the
- * AST must be used in the following phases of the compiler you shouldn't used
- * this approach. To use this mechanism, the AST must be translated into
- * another structure.
- *
- * @see https://www.gnu.org/software/bison/manual/html_node/Destructor-Decl.html
- */
-/*
-%destructor { releaseConstant($$); } <constant>
-%destructor { releaseExpression($$); } <expression>
-%destructor { releaseFactor($$); } <factor>
-%destructor { releaseProgram($$); } <program>
-*/
 
 /** Terminals. */
 %token <id> ID
@@ -89,6 +76,27 @@
 %type <productionRhsRule> productionRhsRule
 
 /**
+ * Destructors. This functions are executed after the parsing ends, so if the
+ * AST must be used in the following phases of the compiler you shouldn't used
+ * this approach. To use this mechanism, the AST must be translated into
+ * another structure.
+ *
+ * @see https://www.gnu.org/software/bison/manual/html_node/Destructor-Decl.html
+ */
+/*
+
+From the documentation and my own testing these actually seem to only be executed when an error occurs, so they're
+actually needed.
+
+%destructor { printf("\nFreeing id\n\n"); free($$); } ID
+%destructor { printf("\nFreeing SymbolSet\n\n"); Array_free($$); } symbols
+%destructor { printf("\nFreeing ProductionSet\n\n"); Array_free($$); } symbols
+%destructor { printf("\nFreeing GrammarDefinition\n\n"); GrammarDefinition_free($$); } grammarDefinition
+%destructor { printf("\nFreeing SymbolSetBinding\n\n"); SymbolSetBinding_free($$); } symbolSetBinding
+%destructor { printf("\nFreeing ProductionSetBinding\n\n"); ProductionSetBinding_free($$); } symbolSetBinding
+*/
+
+/**
  * Precedence and associativity.
  *
  * @see https://www.gnu.org/software/bison/manual/html_node/Precedence.html
@@ -106,9 +114,9 @@ sentences: sentence                             { $$ = SentenceArray_new($1); }
   | sentences[list] sentence[val]               { $$ = SentenceArray_push($list, $val); }
   ;
 
-sentence: grammarDefinition                     { $$ = GrammarDefinitionSentenceSemanticAction($1); }
-  | symbolSetBinding                            { $$ = SymbolSetBindingSentenceSemanticAction($1); }
-  | productionSetBinding                        { $$ = ProductionSetBindingSentenceSemanticAction($1); }
+sentence: grammarDefinition                     { $$ = GrammarDefinitionSentence_new($1); }
+  | symbolSetBinding                            { $$ = SymbolSetBindingSentence_new($1); }
+  | productionSetBinding                        { $$ = ProductionSetBindingSentence_new($1); }
   ;
 
 grammarDefinition:
@@ -117,44 +125,44 @@ grammarDefinition:
     ID[nonTerminalsId] COMMA
     ID[productionsId] COMMA
     ID[initialSymbolId]
-  ANGLE_BRACKET_CLOSE                           { $$ = GrammarDefinitionSemanticAction(
+  ANGLE_BRACKET_CLOSE                           { $$ = GrammarDefinition_new(
                                                          $grammarId, $terminalsId, $nonTerminalsId, $productionsId, $initialSymbolId
                                                        );
                                                 }
 
 symbolSetBinding:
-  ID[setId] EQUALS symbolSet[set]                               { $$ = SymbolSetBindingSemanticAction($setId, $set); }
+  ID[setId] EQUALS symbolSet[set]                               { $$ = SymbolSetBinding_new($setId, $set); }
 
 symbolSet: BRACES_OPEN symbols[values] BRACES_CLOSE             { $$ = $values; }
   | BRACES_OPEN symbols[values] COMMA BRACES_CLOSE              { $$ = $values; }
   | symbolSet[left] UNION symbolSet[right]                      { $$ = SymbolSetUnion($left, $right); }
   ;
 
-symbols: SYMBOL                                                 { $$ = SymbolArray_new($1); }
-  | symbols[list] COMMA SYMBOL[val]                             { $$ = SymbolArray_push($list, $val); }
+symbols: SYMBOL                                                 { $$ = SymbolSet_new($1); }
+  | symbols[list] COMMA SYMBOL[val]                             { $$ = SymbolSet_add($list, $val); }
   ;
 
 productionSetBinding:
-  ID[setId] EQUALS productionSet[set]                           { $$ = ProductionSetBindingSemanticAction($setId, $set); }
+  ID[setId] EQUALS productionSet[set]                           { $$ = ProductionSetBinding_new($setId, $set); }
 
 productionSet: BRACES_OPEN productions[values] BRACES_CLOSE     { $$ = $values; }
   | BRACES_OPEN productions[values] COMMA BRACES_CLOSE          { $$ = $values; }
   | productionSet[left] UNION productionSet[right]              { $$ = ProductionSetUnion($left, $right); }
   ;
 
-productions: production                                         { $$ = ProductionArray_new($1); }
-  | productions[list] COMMA production[val]                     { $$ = ProductionArray_push($list, $val); }
+productions: production                                         { $$ = ProductionSet_new($1); }
+  | productions[list] COMMA production[val]                     { $$ = ProductionSet_add($list, $val); }
   ;
 
-production: SYMBOL[lhs] RIGHT_ARROW productionRhsRules[rhs]     { $$ = ProductionSemanticAction($lhs, $rhs); }
+production: SYMBOL[lhs] RIGHT_ARROW productionRhsRules[rhs]     { $$ = Production_new($lhs, $rhs); }
 
-productionRhsRules: productionRhsRule                           { $$ = ProductionRhsRuleArray_new($1); }
-  | productionRhsRules[list] PIPE productionRhsRule[val]        { $$ = ProductionRhsRuleArray_push($list, $val); }
+productionRhsRules: productionRhsRule                           { $$ = ProductionRhsRuleSet_new($1); }
+  | productionRhsRules[list] PIPE productionRhsRule[val]        { $$ = ProductionRhsRuleSet_add($list, $val); }
   ;
 
-productionRhsRule: SYMBOL SYMBOL                                { $$ = ProductionRhsRuleSymbolSymbolSemanticAction($1, $2); }
-  | SYMBOL                                                      { $$ = ProductionRhsRuleSymbolSemanticAction($1); }
-  | LAMBDA                                                      { $$ = ProductionRhsRuleLambdaSemanticAction(); }
+productionRhsRule: SYMBOL SYMBOL                                { $$ = ProductionRhsRuleSymbolSymbol_new($1, $2); }
+  | SYMBOL                                                      { $$ = ProductionRhsRuleSymbol_new($1); }
+  | LAMBDA                                                      { $$ = ProductionRhsRuleLambda_new(); }
   ;
 
 %%
