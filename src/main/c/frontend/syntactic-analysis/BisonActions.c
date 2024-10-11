@@ -178,6 +178,8 @@ ProductionSet ProductionSet_add(ProductionSet set, Production* production) {
   if (foundEle == NULL) Set_add(set, ele);
   else {
     Set_union(foundEle->production->rhs, production->rhs);
+    free(production->lhs.symbol);
+    free(production);
   }
   return set;
 }
@@ -249,10 +251,12 @@ ProductionSet ProductionSetUnion(ProductionSet left, ProductionSet right) {
   _logSyntacticAnalyzerPushAction(__func__, "ProductionSet(%s) ∪ ProductionSet(%s)", leftStr, rightStr);
   free(leftStr);
   free(rightStr);
-  SetIterator rightIter = Set_iterator(right);
+  SetIterator rightIter = SetIterator_new(right);
   while (SetIterator_hasNext(rightIter)) {
     Production* prod = SetIterator_next(rightIter)->production;
     ProductionSet_add(left, prod);
   }
+  SetIterator_free(rightIter);
+  Set_freeNotElements(right);
   return left;
 }

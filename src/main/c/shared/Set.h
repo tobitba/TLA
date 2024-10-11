@@ -50,7 +50,9 @@ bool Set_Has(Set set, SetElement ele);
 char* Set_toString(Set set);
 void Set_printInfo(Set set);
 
-SetIterator Set_iterator(Set set);
+SetIterator SetIterator_new(Set set);
+void SetIterator_free(SetIterator iter);
+void Set_freeNotElements(Set set);
 bool SetIterator_hasNext(SetIterator iter);
 SetElement* SetIterator_next(SetIterator iter);
 

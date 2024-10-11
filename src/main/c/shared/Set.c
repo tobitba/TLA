@@ -82,6 +82,12 @@ void Set_free(Set set) {
   free(set);
 }
 
+void Set_freeNotElements(Set set) {
+  if (set == NULL) SET_INSTANCE_NULL;
+  set->freeEleFn = NULL;
+  Set_free(set);
+}
+
 bool Set_add(Set set, SetElement ele) {
   if (set == NULL) SET_INSTANCE_NULL;
   uint32_t idx;
@@ -188,7 +194,7 @@ void Set_printInfo(Set set) {
   printf("}\n");
 }
 
-SetIterator Set_iterator(Set set) {
+SetIterator SetIterator_new(Set set) {
   if (set == NULL) SET_INSTANCE_NULL;
   SetIterator iterator = safeMalloc(sizeof(SetIteratorCDT));
   for (int i = 0; i < set->capacity; ++i) {
@@ -203,6 +209,10 @@ SetIterator Set_iterator(Set set) {
   }
   iterator->node = NULL;
   return iterator;
+}
+
+void SetIterator_free(SetIterator iter) {
+  free(iter);
 }
 
 bool SetIterator_hasNext(SetIterator iter) {
@@ -245,8 +255,7 @@ void growBy(Set set, size_t extraCapacity) {
 }
 
 Node* Node_new(SetElement ele, uint32_t hash) {
-  Node* node;
-  node = safeMalloc(sizeof(Node));
+  Node* node = safeMalloc(sizeof(Node));
   node->next = NULL;
   node->element = ele;
   node->hash = hash;
