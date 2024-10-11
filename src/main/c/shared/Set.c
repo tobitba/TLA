@@ -113,6 +113,27 @@ bool Set_add(Set set, SetElement ele) {
   return true;
 }
 
+bool Set_remove(Set set, SetElement ele) {
+  if (set == NULL) SET_INSTANCE_NULL;
+  bool removalFlag = false;
+  uint32_t idx;
+  hashIdx(set,ele,&idx);
+  if(set->nodes[idx] != NULL)
+    set->nodes[idx] = recDelete(set->nodes[idx],ele,&removalFlag,set);
+  return removalFlag;
+}
+
+Node* recDelete(Node* node,SetElement ele,bool* flag,Set set) {
+  if(node == NULL)
+    return node;
+  if(set->equalsEleFn(node->element,ele)){
+    *flag = true;
+    return node->next;
+  }
+  node->next = recDelete(node->next,ele,flag,set);
+  return node;
+}
+
 SetElement* Set_find(Set set, SetElement ele) {
   if (set == NULL) SET_INSTANCE_NULL;
   uint32_t idx;
@@ -132,7 +153,7 @@ bool Set_Has(Set set, SetElement ele) {
 }
 
 void Set_union(Set dest, Set src) {
-  if (dest == NULL) exitInvalidArgument(__func__, "Destination can't be NULL");
+  if (dest == NULL) SET_INSTANCE_NULL;
   if (src == NULL) return;
 
   for (int i = 0; i < src->capacity; ++i) {
@@ -148,6 +169,36 @@ void Set_union(Set dest, Set src) {
   }
   free((void*)src->nodes);
   free(src);
+}
+
+void Set_intersection(Set base, Set filter) {
+  if (base == NULL) SET_INSTANCE_NULL;
+  if (filter == NULL) { 
+    base = NULL;
+    return;
+  }
+  for(int i = 0; i < base->capacity; ++i) {
+    Node* node = base->nodes[i];
+    while(node!=NULL){
+      if(!Set_has(filter,node->element))
+        Set_remove(base,node->element);
+      node=node->next
+    }
+  }
+  free((void*)filter->nodes);
+  free(filter);
+}
+
+void Set_subtraction(Set minuend, Set subtrahend) {
+  if (minuend == NULL) SET_INSTANCE_NULL;
+  if(subtrahend == NULL) return;
+  for(int i = 0; i < subtrahend; ++i) {
+    Node* node = subtrahend->nodes[i];
+    while(node!=NULL){
+      Set_remove(minuend,node->element);
+      node=node->next;
+    }
+  }
 }
 
 char* Set_toString(Set set) {
