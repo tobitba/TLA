@@ -42,6 +42,8 @@ symbol_r [^[:space:],{}]+
                                       return TokenLexemeAction(createLexicalAnalyzerContext(), L);
                                     }
 "u"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), UNION); }
+"n"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), INTERSECTION); }
+"-"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), SUBTRACTION); }
 {id_r}                              { return IdLexemeAction(createLexicalAnalyzerContext()); }
 "("                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), PARENTHESIS_OPEN); }
 
