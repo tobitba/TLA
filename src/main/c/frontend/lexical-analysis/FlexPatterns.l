@@ -36,6 +36,8 @@ symbol_r [^[:space:],{}]+
 
 "="                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), EQUALS); }
 "u"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), UNION); }
+"n"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), INTERSECTION); }
+"-"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), SUBTRACTION); }
 {id_r}                              { return IdLexemeAction(createLexicalAnalyzerContext()); }
 
 "/*"                                { BEGIN(MULTILINE_COMMENT); BeginMultilineCommentLexemeAction(createLexicalAnalyzerContext()); }

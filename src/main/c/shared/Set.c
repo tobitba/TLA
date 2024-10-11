@@ -182,7 +182,7 @@ void Set_intersection(Set base, Set filter) {
     while(node!=NULL){
       if(!Set_has(filter,node->element))
         Set_remove(base,node->element);
-      node=node->next
+      node=node->next;
     }
   }
   free((void*)filter->nodes);

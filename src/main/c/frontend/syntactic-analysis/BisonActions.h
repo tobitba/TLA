@@ -44,6 +44,10 @@ ProductionRhsRule* ProductionRhsRuleLambda_new();
 
 // Set operations
 SymbolSet SymbolSetUnion(SymbolSet left, SymbolSet right);
+SymbolSet SymbolSetIntersection(SymbolSet left, SymbolSet right);
+SymbolSet SymbolSetSubtraction(SymbolSet left, SymbolSet right);
 ProductionSet ProductionSetUnion(ProductionSet left, ProductionSet right);
+ProductionSet ProductionSetIntersection(ProductionSet left, ProductionSet right);
+ProductionSet ProductionSetSubtraction(ProductionSet left, ProductionSet right);
 
 #endif

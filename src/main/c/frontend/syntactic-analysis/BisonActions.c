@@ -184,6 +184,22 @@ ProductionSet ProductionSet_add(ProductionSet set, Production* production) {
   return set;
 }
 
+ProductionSet ProductionSet_remove(ProductionSet set, Production* production) {
+  char* str = Production_toString(production);
+  _logSyntacticAnalyzerPushAction(__func__, "Production(%s)", str);
+  free(str);
+  SetElement ele = {.production = production};
+  Set_remove(set,ele);
+}
+
+boolean ProductionSet_has(ProductionSet set, Production* production) {
+  char* str = Production_toString(production);
+  _logSyntacticAnalyzerPushAction(__func__, "Production(%s)", str);
+  free(str);
+  SetElement ele = {.production = production};
+  return Set_Has(set,ele);
+}
+
 Production* Production_new(Symbol lhs, ProductionRhsRuleSet productionRhsRules) {
   _logSyntacticAnalyzerAction(__func__);
   Production* production = safeMalloc(sizeof(Production));
@@ -245,6 +261,26 @@ SymbolSet SymbolSetUnion(SymbolSet left, SymbolSet right) {
   return left;
 }
 
+SymbolSet SymbolSetIntersection(SymbolSet left, SymbolSet right) {
+  char* leftStr = Set_toString(left);
+  char* rightStr = Set_toString(right);
+  _logSyntacticAnalyzerPushAction(__func__, "SymbolSet(%s) n SymbolSet(%s)", leftStr, rightStr);
+  free(leftStr);
+  free(rightStr);
+  Set_intersection(left, right);
+  return left;
+}
+
+SymbolSet SymbolSetSubtraction(SymbolSet left, SymbolSet right) {
+  char* leftStr = Set_toString(left);
+  char* rightStr = Set_toString(right);
+  _logSyntacticAnalyzerPushAction(__func__, "SymbolSet(%s) - SymbolSet(%s)", leftStr, rightStr);
+  free(leftStr);
+  free(rightStr);
+  Set_subtraction(left, right);
+  return left;
+}
+
 ProductionSet ProductionSetUnion(ProductionSet left, ProductionSet right) {
   char* leftStr = Set_toString(left);
   char* rightStr = Set_toString(right);
@@ -255,6 +291,39 @@ ProductionSet ProductionSetUnion(ProductionSet left, ProductionSet right) {
   while (SetIterator_hasNext(rightIter)) {
     Production* prod = SetIterator_next(rightIter)->production;
     ProductionSet_add(left, prod);
+  }
+  SetIterator_free(rightIter);
+  Set_freeNotElements(right);
+  return left;
+}
+
+ProductionSet ProductionSetIntersection(ProductionSet left, ProductionSet right) {
+  char* leftStr = Set_toString(left);
+  char* rightStr = Set_toString(right);
+  _logSyntacticAnalyzerPushAction(__func__, "ProductionSet(%s) n ProductionSet(%s)", leftStr, rightStr);
+  free(leftStr);
+  free(rightStr);
+  SetIterator leftIter = SetIterator_new(left);
+  while (SetIterator_hasNext(leftIter)) {
+    Production* prod = SetIterator_next(leftIter)->production;
+    if(ProductionSet_isPresent(right,prod))
+      ProductionSet_remove(left,prod);
+  }
+  SetIterator_free(leftIter);
+  Set_freeNotElements(right);
+  return left;
+}
+
+ProductionSet ProductionSetSubtraction(ProductionSet left, ProductionSet right) {
+  char* leftStr = Set_toString(left);
+  char* rightStr = Set_toString(right);
+  _logSyntacticAnalyzerPushAction(__func__, "ProductionSet(%s) n ProductionSet(%s)", leftStr, rightStr);
+  free(leftStr);
+  free(rightStr);
+  SetIterator rightIter = SetIterator_new(right);
+  while (SetIterator_hasNext(rightIter)){
+    Production* prod = SetIterator_next(rightIter)->production;
+    ProductionSet_remove(left,prod);
   }
   SetIterator_free(rightIter);
   Set_freeNotElements(right);
