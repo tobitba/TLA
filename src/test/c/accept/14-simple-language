@@ -1,5 +1,4 @@
-G = < sigma, L1, P, S >
-L1 = < sigma, N, P, S >
+G = < sigma, N, P, S >
 N = { S, A, B }
 P = { S -> b A | c, A -> a }
 sigma = { a, b, c }
