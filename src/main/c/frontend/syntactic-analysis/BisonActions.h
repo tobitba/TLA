@@ -42,6 +42,13 @@ ProductionRhsRule* ProductionRhsRuleSymbolSymbol_new(Symbol leftSymbol, Symbol r
 ProductionRhsRule* ProductionRhsRuleSymbol_new(Symbol symbol);
 ProductionRhsRule* ProductionRhsRuleLambda_new();
 
+Language* Language_new(Id grammarId);
+LanguageExpression* SimpleLanguageExpression_new(Language* language);
+LanguageExpression*
+ComplexLanguageExpression_new(LanguageExpression* leftLang, LanguageExpression* rightlang, LanguageExpressionType type);
+LanguageBinding* LanguageBinding_new(Id langId, LanguageExpression* langExpression);
+Sentence* LanguageBindingSentence_new(LanguageBinding* languageBinding);
+
 // Set operations
 SymbolSet SymbolSetUnion(SymbolSet left, SymbolSet right);
 ProductionSet ProductionSetUnion(ProductionSet left, ProductionSet right);

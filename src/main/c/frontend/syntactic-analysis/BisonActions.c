@@ -233,6 +233,47 @@ ProductionRhsRule* ProductionRhsRuleLambda_new() {
   return rule;
 }
 
+///////////// Language operations /////////////
+Language* Language_new(Id grammarId) {
+  _logSyntacticAnalyzerAction(__FUNCTION__);
+  Language* language = safeMalloc(sizeof(Language));
+  language->grammarId = grammarId;
+  return language;
+}
+
+LanguageExpression* SimpleLanguageExpression_new(Language* language) {
+  _logSyntacticAnalyzerAction(__FUNCTION__);
+  LanguageExpression* langExpression = safeMalloc(sizeof(LanguageExpression));
+  langExpression->type = LANGUAGE;
+  langExpression->language = language;
+  return langExpression;
+}
+
+LanguageExpression* ComplexLanguageExpression_new(
+  LanguageExpression* leftLang, LanguageExpression* rightlang, LanguageExpressionType type
+) {
+  _logSyntacticAnalyzerAction(__FUNCTION__);
+  LanguageExpression* langExpression = safeMalloc(sizeof(LanguageExpression));
+  langExpression->type = type;
+  langExpression->leftLanguageExpression = leftLang;
+  langExpression->rightLanguageExpression = rightlang;
+  return langExpression;
+}
+
+LanguageBinding* LanguageBinding_new(Id langId, LanguageExpression* langExpression) {
+  LanguageBinding* languageBinding = safeMalloc(sizeof(LanguageBinding));
+  languageBinding->id = langId;
+  languageBinding->LanguageExpression = langExpression;
+  return languageBinding;
+}
+
+Sentence* LanguageBindingSentence_new(LanguageBinding* languageBinding) {
+  _logSyntacticAnalyzerAction(__func__);
+  Sentence* sentence = safeMalloc(sizeof(Sentence));
+  sentence->type = LANGUAGE_SENTENCE;
+  sentence->languageBinding = languageBinding;
+  return sentence;
+}
 ///////////// Set operations /////////////
 
 SymbolSet SymbolSetUnion(SymbolSet left, SymbolSet right) {

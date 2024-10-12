@@ -24,6 +24,8 @@ void BeginGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerC
 void EndGrammarDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 void BeginSetDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 void EndSetDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
+void BeginLanguageDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
+void EndLanguageDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);
 
 Token TokenLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token);
 Token IdLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext);

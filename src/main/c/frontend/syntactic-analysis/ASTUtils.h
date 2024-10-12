@@ -42,4 +42,10 @@ void ProductionRhsRule_freeEle(SetElement ele);
 char* ProductionRhsRule_toString(ProductionRhsRule* productionRhsRule);
 char* ProductionRhsRule_toStringEle(SetElement ele);
 
+//////////// Languages ////////////
+void LanguageBinding_free(LanguageBinding* languageBinding);
+void LanguegeExpression_free(LanguageExpression* languageExpression);
+void Language_free(Language* language);
+char* LanguageBinding_toString(LanguageBinding* languageBinding);
+
 #endif
