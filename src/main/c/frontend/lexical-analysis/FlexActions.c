@@ -93,6 +93,16 @@ void EndSetDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext
   destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
+void BeginLanguageDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
+}
+
+void EndLanguageDefinitionLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext) {
+  _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
+  destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
+}
+
 Token TokenLexemeAction(LexicalAnalyzerContext* lexicalAnalyzerContext, Token token) {
   _logLexicalAnalyzerContext(__func__, lexicalAnalyzerContext);
   lexicalAnalyzerContext->semanticValue->token = token;

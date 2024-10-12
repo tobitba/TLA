@@ -15,9 +15,11 @@ typedef struct SetCDT* Set;
  * Node types for the Abstract Syntax Tree (AST).
  */
 
-typedef enum { GRAMMAR_DEFINITION, SYMBOL_SET, PRODUCTION_SET } SentenceType;
+typedef enum { GRAMMAR_DEFINITION, SYMBOL_SET, PRODUCTION_SET, LANGUAGE_SENTENCE } SentenceType;
 
 typedef enum { SYMBOL_SYMBOL_T, SYMBOL_T, LAMBDA_T } ProductionRhsRuleType;
+
+typedef enum { LANGUAGE, LANG_UNION, LANG_INTERSEC, LANG_MINUS, LANG_CONCAT, LANG_REVERSE } LanguageExpressionType;
 
 /**
  * This typedefs allows self-referencing types.
@@ -33,6 +35,9 @@ typedef struct SymbolSetBinding SymbolSetBinding;
 typedef struct ProductionSetBinding ProductionSetBinding;
 typedef struct Production Production;
 typedef struct ProductionRhsRule ProductionRhsRule;
+typedef struct LanguageBinding LanguageBinding;
+typedef struct LanguageExpression LanguageExpression;
+typedef struct Language Language;
 
 typedef Array SentenceArray;
 typedef Set SymbolSet;
@@ -66,6 +71,26 @@ struct SymbolSetBinding {
   SymbolSet symbols;
 };
 
+struct LanguageBinding {
+  Id id;
+  LanguageExpression* LanguageExpression;
+};
+
+struct LanguageExpression {
+  union {
+    Language* language;
+    struct {
+      LanguageExpression* leftLanguageExpression;
+      LanguageExpression* rightLanguageExpression;
+    };
+  };
+  LanguageExpressionType type;
+};
+
+struct Language {
+  Id grammarId;
+};
+
 struct ProductionSetBinding {
   Id id;
   ProductionSet productions;
@@ -76,6 +101,7 @@ struct Sentence {
     GrammarDefinition* grammarDefinition;
     SymbolSetBinding* symbolSetBinding;
     ProductionSetBinding* productionSetBinding;
+    LanguageBinding* languageBinding;
   };
   SentenceType type;
 };

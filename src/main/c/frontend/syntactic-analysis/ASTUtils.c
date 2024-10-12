@@ -54,6 +54,8 @@ void SentenceArray_freeEle(ArrayElement ele) {
   case PRODUCTION_SET:
     ProductionSetBinding_free(ele.sentence->productionSetBinding);
     break;
+  case LANGUAGE_SENTENCE:
+    LanguageBinding_free(ele.sentence->languageBinding);
   }
   free(ele.sentence);
 }
@@ -70,7 +72,11 @@ char* Sentence_toString(Sentence* sentence) {
   case PRODUCTION_SET:
     str = ProductionSetBinding_toString(sentence->productionSetBinding);
     break;
+  case LANGUAGE_SENTENCE:
+    str = LanguageBinding_toString(sentence->languageBinding);
+    break;
   }
+
   return str;
 }
 
@@ -289,5 +295,35 @@ char* ProductionSetBinding_toString(ProductionSetBinding* productionSetBinding) 
     "ProductionSetBinding{ id: " COLORIZE_ID("%s") ", productions: %s }", productionSetBinding->id.id, productions
   );
   free(productions);
+  return str;
+}
+
+//////////// LANGUAGES ////////////
+void LanguageBinding_free(LanguageBinding* languageBinding) {
+  logDebugging(_logger, "Executing destructor: %s", __func__);
+  LanguegeExpression_free(languageBinding->LanguageExpression);
+  free(languageBinding->id.id);
+  free(languageBinding);
+}
+
+void LanguegeExpression_free(LanguageExpression* languageExpression) {
+  logDebugging(_logger, "Executing destructor: %s", __func__);
+  switch (languageExpression->type) {
+  case LANGUAGE:
+    Language_free(languageExpression->language);
+    break;
+  default:
+    break; // TODO: hay que completar con todos los valores del enum aca.
+  }
+  free(languageExpression);
+}
+
+void Language_free(Language* language) {
+  free(language->grammarId.id);
+  free(language);
+}
+
+char* LanguageBinding_toString(LanguageBinding* languageBinding) {
+  char* str = safeAsprintf(COLORIZE_SYMBOL("%s"), languageBinding->id.id);
   return str;
 }

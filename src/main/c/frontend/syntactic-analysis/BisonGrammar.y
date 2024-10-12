@@ -42,6 +42,9 @@
   Production* production;
   ProductionRhsRuleSet productionRhsRules;
   ProductionRhsRule* productionRhsRule;
+  LanguageBinding* languageBinding;
+  LanguageExpression* languageExpression;
+  Language* language;
 }
 
 /** Terminals. */
@@ -57,6 +60,9 @@
 %token <token> PIPE
 %token <token> UNION
 %token <symbol> SYMBOL
+%token <token> L
+%token <token> PARENTHESIS_OPEN
+%token <token> PARENTHESIS_CLOSE
 
 %token <token> UNKNOWN
 
@@ -74,6 +80,9 @@
 %type <production> production
 %type <productionRhsRules> productionRhsRules
 %type <productionRhsRule> productionRhsRule
+%type <languageBinding> languageBinding
+%type <languageExpression> languageExpression
+%type <language> language
 
 /**
  * Destructors. This functions are executed after the parsing ends, so if the
@@ -117,6 +126,7 @@ sentences: sentence                             { $$ = SentenceArray_new($1); }
 sentence: grammarDefinition                     { $$ = GrammarDefinitionSentence_new($1); }
   | symbolSetBinding                            { $$ = SymbolSetBindingSentence_new($1); }
   | productionSetBinding                        { $$ = ProductionSetBindingSentence_new($1); }
+  | languageBinding                             { $$ = LanguageBindingSentence_new($1); }
   ;
 
 grammarDefinition:
@@ -164,5 +174,13 @@ productionRhsRule: SYMBOL SYMBOL                                { $$ = Productio
   | SYMBOL                                                      { $$ = ProductionRhsRuleSymbol_new($1); }
   | LAMBDA                                                      { $$ = ProductionRhsRuleLambda_new(); }
   ;
+
+languageBinding: ID[languageID] EQUALS languageExpression[lang]           { $$ = LanguageBinding_new($languageID,$lang); } 
+
+languageExpression: language                                              { $$ = SimpleLanguageExpression_new($1); }
+ | languageExpression[left] UNION languageExpression[right]               { $$ = ComplexLanguageExpression_new($left,$right,LANG_UNION); }
+ ;
+
+language: L PARENTHESIS_OPEN ID[grammarID] PARENTHESIS_CLOSE               { $$ = Language_new($grammarID); }
 
 %%
