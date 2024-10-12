@@ -165,7 +165,6 @@ ProductionSet ProductionSet_new(Production* production) {
   _logSyntacticAnalyzerAction(__func__);
   ProductionSet set = Set_new(Production_hashEle, Production_equalsEle, Production_freeEle, Production_toStringEle);
   ProductionSet_add(set, production);
-
   return set;
 }
 
@@ -189,7 +188,8 @@ ProductionSet ProductionSet_remove(ProductionSet set, Production* production) {
   _logSyntacticAnalyzerPushAction(__func__, "Production(%s)", str);
   free(str);
   SetElement ele = {.production = production};
-  Set_remove(set,ele);
+  Set_remove(set, ele);
+  return set;
 }
 
 boolean ProductionSet_has(ProductionSet set, Production* production) {
@@ -197,7 +197,7 @@ boolean ProductionSet_has(ProductionSet set, Production* production) {
   _logSyntacticAnalyzerPushAction(__func__, "Production(%s)", str);
   free(str);
   SetElement ele = {.production = production};
-  return Set_Has(set,ele);
+  return Set_Has(set, ele);
 }
 
 Production* Production_new(Symbol lhs, ProductionRhsRuleSet productionRhsRules) {
@@ -347,8 +347,7 @@ ProductionSet ProductionSetIntersection(ProductionSet left, ProductionSet right)
   SetIterator leftIter = SetIterator_new(left);
   while (SetIterator_hasNext(leftIter)) {
     Production* prod = SetIterator_next(leftIter)->production;
-    if(ProductionSet_isPresent(right,prod))
-      ProductionSet_remove(left,prod);
+    if (ProductionSet_has(right, prod)) ProductionSet_remove(left, prod);
   }
   SetIterator_free(leftIter);
   Set_freeNotElements(right);
@@ -362,9 +361,9 @@ ProductionSet ProductionSetSubtraction(ProductionSet left, ProductionSet right) 
   free(leftStr);
   free(rightStr);
   SetIterator rightIter = SetIterator_new(right);
-  while (SetIterator_hasNext(rightIter)){
+  while (SetIterator_hasNext(rightIter)) {
     Production* prod = SetIterator_next(rightIter)->production;
-    ProductionSet_remove(left,prod);
+    ProductionSet_remove(left, prod);
   }
   SetIterator_free(rightIter);
   Set_freeNotElements(right);
