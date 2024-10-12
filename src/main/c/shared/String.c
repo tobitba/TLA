@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include "String.h"
 #include "utils.h"
 #include <ctype.h>
@@ -103,7 +104,7 @@ char* concatenate(const unsigned int count, ...) {
   va_start(arguments, count);
   for (unsigned int k = 0; k < count; ++k) {
     const char* nextString = va_arg(arguments, const char*);
-    strlcat(string, nextString, length);
+    strncat(string, nextString, length);
   }
   va_end(arguments);
   return string;
@@ -122,10 +123,10 @@ char* escape(const char* string) {
   char charToString[2] = {0, 0};
   for (unsigned int k = 0; 0 < string[k]; ++k) {
     if (iscntrl(string[k])) {
-      strlcat(escapedString, _controlCharacterToEscapedString(string[k]), length);
+      strncat(escapedString, _controlCharacterToEscapedString(string[k]), length);
     } else {
       charToString[0] = string[k];
-      strlcat(escapedString, charToString, length);
+      strncat(escapedString, charToString, length);
     }
   }
   return escapedString;
