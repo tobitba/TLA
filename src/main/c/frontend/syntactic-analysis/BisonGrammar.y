@@ -47,6 +47,54 @@
   Language* language;
 }
 
+%define api.value.intersection.name SemanticValue
+
+%intersection {
+  /** Terminals. */
+	Token token;
+  Id id;
+  Symbol symbol;
+
+	/** Non-terminals. */
+	Program* program;
+  SentenceArray sentences;
+  Sentence* sentence;
+  GrammarDefinition* grammarDefinition;
+  SymbolSetBinding* symbolSetBinding;
+  SymbolSet symbolSet;
+  SymbolSet symbols;
+  ProductionSetBinding* productionSetBinding;
+  ProductionSet productionSet;
+  ProductionSet productions;
+  Production* production;
+  ProductionRhsRuleSet productionRhsRules;
+  ProductionRhsRule* productionRhsRule;
+}
+
+%define api.value.subtraction.name SemanticValue
+
+%subtraction {
+  /** Terminals. */
+	Token token;
+  Id id;
+  Symbol symbol;
+
+	/** Non-terminals. */
+	Program* program;
+  SentenceArray sentences;
+  Sentence* sentence;
+  GrammarDefinition* grammarDefinition;
+  SymbolSetBinding* symbolSetBinding;
+  SymbolSet symbolSet;
+  SymbolSet symbols;
+  ProductionSetBinding* productionSetBinding;
+  ProductionSet productionSet;
+  ProductionSet productions;
+  Production* production;
+  ProductionRhsRuleSet productionRhsRules;
+  ProductionRhsRule* productionRhsRule;
+}
+
 /** Terminals. */
 %token <id> ID
 %token <token> EQUALS
@@ -59,6 +107,8 @@
 %token <token> LAMBDA
 %token <token> PIPE
 %token <token> UNION
+%token <token> INTERSECTION
+%token <token> SUBTRACTION
 %token <symbol> SYMBOL
 %token <token> L
 %token <token> PARENTHESIS_OPEN
@@ -146,6 +196,8 @@ symbolSetBinding:
 symbolSet: BRACES_OPEN symbols[values] BRACES_CLOSE             { $$ = $values; }
   | BRACES_OPEN symbols[values] COMMA BRACES_CLOSE              { $$ = $values; }
   | symbolSet[left] UNION symbolSet[right]                      { $$ = SymbolSetUnion($left, $right); }
+  | symbolSet[left] INTERSECTION symbolSet[right]               { $$ = SymbolSetIntersection($left, $right); }
+  | symbolSet[left] SUBTRACTION symbolSet[right]                { $$ = SymbolSetSubtraction($left, $right); }
   ;
 
 symbols: SYMBOL                                                 { $$ = SymbolSet_new($1); }
@@ -158,6 +210,8 @@ productionSetBinding:
 productionSet: BRACES_OPEN productions[values] BRACES_CLOSE     { $$ = $values; }
   | BRACES_OPEN productions[values] COMMA BRACES_CLOSE          { $$ = $values; }
   | productionSet[left] UNION productionSet[right]              { $$ = ProductionSetUnion($left, $right); }
+  | productionSet[left] INTERSECTION productionSet[right]       { $$ = productionSetIntersection($left, $right); }
+  | productionSet[left] SUBTRACTION productionSet[right]        { $$ = productionSetSubtraction($left, $right); }
   ;
 
 productions: production                                         { $$ = ProductionSet_new($1); }
