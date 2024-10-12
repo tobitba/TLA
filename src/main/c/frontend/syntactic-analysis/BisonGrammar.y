@@ -113,7 +113,8 @@ actually needed.
  * @see https://www.gnu.org/software/bison/manual/html_node/Precedence.html
  */
 %left UNION
-
+%left INTERSECTION
+%left SUBTRACTION
 %%
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
