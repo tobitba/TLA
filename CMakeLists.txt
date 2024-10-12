@@ -16,7 +16,7 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
 	message(NOTICE "The C compiler is GCC.")
 
 	# Options for GCC.
-	add_compile_options(-static-libgcc -std=gnu99 -fsanitize=address)
+	add_compile_options(-static-libgcc -std=gnu99 -fsanitize=address -D_GNU_SOURCE -DLIBBSD_OVERLAY -I/usr/include/bsd)
   add_compile_options(-O3)
   # add_compile_options(-g)
   add_link_options(-fsanitize=address)
@@ -76,5 +76,10 @@ add_executable(Compiler
 	# ...
 )
 
-# Link final project and libraries.
-target_link_libraries(Compiler)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LIBBSD REQUIRED libbsd)
+
+include_directories(${LIBBSD_INCLUDE_DIRS})
+
+target_link_libraries(Compiler ${LIBBSD_LIBRARIES})
+# target_link_libraries(Compiler)
