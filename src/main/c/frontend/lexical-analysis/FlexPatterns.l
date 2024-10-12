@@ -36,13 +36,14 @@ symbol_r [^[:space:],{}]+
 %%
 
 "="                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), EQUALS); }
-"L"                                {
+"L"                                 {
                                       BEGIN(LANGUAGE_DEFINITION);
                                       BeginLanguageDefinitionLexemeAction(createLexicalAnalyzerContext());
                                       return TokenLexemeAction(createLexicalAnalyzerContext(), L);
                                     }
 "u"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), UNION); }
 {id_r}                              { return IdLexemeAction(createLexicalAnalyzerContext()); }
+"("                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), PARENTHESIS_OPEN); }
 
 "/*"                                { BEGIN(MULTILINE_COMMENT); BeginMultilineCommentLexemeAction(createLexicalAnalyzerContext()); }
 <MULTILINE_COMMENT>"*/"             { EndMultilineCommentLexemeAction(createLexicalAnalyzerContext()); BEGIN(INITIAL); }
@@ -102,7 +103,7 @@ symbol_r [^[:space:],{}]+
 
 
 <LANGUAGE_DEFINITION>"("            { return TokenLexemeAction(createLexicalAnalyzerContext(), PARENTHESIS_OPEN);  }
-<LANGUAGE_DEFINITION>{id_r}          { return IdLexemeAction(createLexicalAnalyzerContext()); }
+<LANGUAGE_DEFINITION>{id_r}         { return IdLexemeAction(createLexicalAnalyzerContext()); }
 <LANGUAGE_DEFINITION>")"            { 
                                       EndLanguageDefinitionLexemeAction(createLexicalAnalyzerContext());
                                       Token t = TokenLexemeAction(createLexicalAnalyzerContext(), PARENTHESIS_CLOSE);

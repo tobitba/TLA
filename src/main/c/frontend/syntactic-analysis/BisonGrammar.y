@@ -181,6 +181,6 @@ languageExpression: language                                              { $$ =
  | languageExpression[left] UNION languageExpression[right]               { $$ = ComplexLanguageExpression_new($left,$right,LANG_UNION); }
  ;
 
-language: L PARENTHESIS_OPEN ID[grammarID] PARENTHESIS_CLOSE               { $$ = Language_new($grammarID); }
+language: L PARENTHESIS_OPEN ID[grammarID] PARENTHESIS_CLOSE              { $$ = Language_new($grammarID); }
 
 %%
