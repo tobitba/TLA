@@ -47,54 +47,6 @@
   Language* language;
 }
 
-%define api.value.intersection.name SemanticValue
-
-%intersection {
-  /** Terminals. */
-	Token token;
-  Id id;
-  Symbol symbol;
-
-	/** Non-terminals. */
-	Program* program;
-  SentenceArray sentences;
-  Sentence* sentence;
-  GrammarDefinition* grammarDefinition;
-  SymbolSetBinding* symbolSetBinding;
-  SymbolSet symbolSet;
-  SymbolSet symbols;
-  ProductionSetBinding* productionSetBinding;
-  ProductionSet productionSet;
-  ProductionSet productions;
-  Production* production;
-  ProductionRhsRuleSet productionRhsRules;
-  ProductionRhsRule* productionRhsRule;
-}
-
-%define api.value.subtraction.name SemanticValue
-
-%subtraction {
-  /** Terminals. */
-	Token token;
-  Id id;
-  Symbol symbol;
-
-	/** Non-terminals. */
-	Program* program;
-  SentenceArray sentences;
-  Sentence* sentence;
-  GrammarDefinition* grammarDefinition;
-  SymbolSetBinding* symbolSetBinding;
-  SymbolSet symbolSet;
-  SymbolSet symbols;
-  ProductionSetBinding* productionSetBinding;
-  ProductionSet productionSet;
-  ProductionSet productions;
-  Production* production;
-  ProductionRhsRuleSet productionRhsRules;
-  ProductionRhsRule* productionRhsRule;
-}
-
 /** Terminals. */
 %token <id> ID
 %token <token> EQUALS
@@ -210,8 +162,8 @@ productionSetBinding:
 productionSet: BRACES_OPEN productions[values] BRACES_CLOSE     { $$ = $values; }
   | BRACES_OPEN productions[values] COMMA BRACES_CLOSE          { $$ = $values; }
   | productionSet[left] UNION productionSet[right]              { $$ = ProductionSetUnion($left, $right); }
-  | productionSet[left] INTERSECTION productionSet[right]       { $$ = productionSetIntersection($left, $right); }
-  | productionSet[left] SUBTRACTION productionSet[right]        { $$ = productionSetSubtraction($left, $right); }
+  | productionSet[left] INTERSECTION productionSet[right]       { $$ = ProductionSetIntersection($left, $right); }
+  | productionSet[left] SUBTRACTION productionSet[right]        { $$ = ProductionSetSubtraction($left, $right); }
   ;
 
 productions: production                                         { $$ = ProductionSet_new($1); }
