@@ -47,20 +47,22 @@ bool Set_add(Set set, SetElement ele);
 bool Set_remove(Set set, SetElement ele);
 
 /**
- * @param `dest` Destination array, all elements from `src` will be pushed to `dest`.
- * @param `src` Source array. Will be freed after call to prevent double free errors on the elements.
+ * @param `dest` Destination set, all elements from `src` will be pushed to `dest`.
+ * @param `src` Source set. Will be freed after call to prevent double free errors on the elements.
  */
 void Set_union(Set dest, Set src);
 
 /**
- * @param 'base' Destination array. Any elements which are not also present in filter will be removed.
- * @param 'filter' Source array. Will be freed after call to prevent double free errors on the elements.
+ * @param `base` Destination set. Any elements which are not also present in filter will be removed.
+ * @param `filter` Source set. Will be freed after call to prevent double free errors on the elements.
  */
 void Set_intersection(Set base, Set filter);
 
 /**
- * @param 'minuend' Destination array. Any elements present in subtrahend will be removed.
- * @param 'subtrahend' Source array. Will be freed after call to prevent double free errors on the elements.
+ * @param `minuend`
+ * @param `subtrahend`
+ *
+ * Any elements present in `subtrahend` will be removed from the `minuend`.
  */
 void Set_subtraction(Set minuend, Set subtrahend);
 
