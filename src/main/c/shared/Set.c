@@ -1,4 +1,5 @@
 #include "Set.h"
+#include "Logger.h"
 #include "SetElement.h"
 #include "String.h"
 #include "utils.h"
@@ -12,6 +13,8 @@
 
 #define SET_INSTANCE_NULL exitInvalidArgument(__func__, "Set instance can't be NULL")
 #define SET_ITER_INSTANCE_NULL exitInvalidArgument(__func__, "SetIterator instance can't be NULL")
+
+static Logger* _logger = NULL;
 
 typedef struct Node {
   uint32_t hash;
@@ -114,10 +117,18 @@ bool Set_add(Set set, SetElement ele) {
 }
 
 Node* recDelete(Node* node, SetElement ele, bool* flag, Set set) {
-  if (node == NULL) return node;
+  if (node == NULL) return NULL;
   if (set->equalsEleFn(node->element, ele)) {
     *flag = true;
-    return node->next;
+    Node* aux = node->next;
+    char* eleStr = set->toStringEleFn(node->element);
+    logDebugging(_logger, "Deleting element: %s", eleStr);
+    free(eleStr);
+    if (set->freeEleFn != NULL) {
+      set->freeEleFn(node->element);
+    }
+    // free(node);
+    return aux;
   }
   node->next = recDelete(node->next, ele, flag, set);
   return node;
@@ -128,8 +139,24 @@ bool Set_remove(Set set, SetElement ele) {
   bool removalFlag = false;
   uint32_t idx;
   hashIdx(set, ele, &idx);
-  if (set->nodes[idx] != NULL) set->nodes[idx] = recDelete(set->nodes[idx], ele, &removalFlag, set);
+  logDebugging(_logger, "Attempting to remove element from set.");
+  char* setStr = Set_toString(set);
+  char* eleStr = set->toStringEleFn(ele);
+  logDebugging(_logger, "Set: %s, Element: %s", setStr, eleStr);
+  free(setStr);
+  free(eleStr);
+  if (set->nodes[idx] != NULL) {
+    set->nodes[idx] = recDelete(set->nodes[idx], ele, &removalFlag, set);
+  }
+  if (removalFlag) {
+    set->count--;
+  }
+  Set_printInfo(set);
   return removalFlag;
+}
+
+bool Set_isEmpty(Set set) {
+  return set->count == 0;
 }
 
 SetElement* Set_find(Set set, SetElement ele) {
@@ -189,6 +216,9 @@ void Set_intersection(Set base, Set filter) {
 void Set_subtraction(Set minuend, Set subtrahend) {
   if (minuend == NULL) SET_INSTANCE_NULL;
   if (subtrahend == NULL) return;
+  char* min = Set_toString(minuend);
+  char* sub = Set_toString(subtrahend);
+  logError(_logger, "min: %s, sub: %s", min, sub);
   for (int i = 0; i < subtrahend->capacity; ++i) {
     Node* node = subtrahend->nodes[i];
     while (node != NULL) {
@@ -308,4 +338,14 @@ Node* Node_new(SetElement ele, uint32_t hash) {
   node->element = ele;
   node->hash = hash;
   return node;
+}
+
+void Set_initializeLogger() {
+  _logger = createLogger("SetLib");
+}
+
+void Set_freeLogger() {
+  if (_logger != NULL) {
+    destroyLogger(_logger);
+  }
 }

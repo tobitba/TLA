@@ -204,13 +204,16 @@ void ProductionRhsRule_free(ProductionRhsRule* rule) {
   logDebugging(_logger, "Executing destructor: %s", __func__);
   switch (rule->type) {
   case SYMBOL_SYMBOL_T:
+    logInformation(_logger, "Case SS T %s  %s", rule->leftSymbol.symbol, rule->rightSymbol.symbol);
     free(rule->leftSymbol.symbol);
     free(rule->rightSymbol.symbol);
     break;
   case SYMBOL_T:
+    logInformation(_logger, "Case S T %s", rule->symbol.symbol);
     free(rule->symbol.symbol);
     break;
   case LAMBDA_T:
+    logInformation(_logger, "Freed Rule is lambda");
     break;
   }
   free(rule);

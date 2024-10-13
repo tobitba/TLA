@@ -188,7 +188,13 @@ ProductionSet ProductionSet_remove(ProductionSet set, Production* production) {
   _logSyntacticAnalyzerPushAction(__func__, "Production(%s)", str);
   free(str);
   SetElement ele = {.production = production};
-  Set_remove(set, ele);
+  SetElement* foundEle = Set_find(set, ele);
+  if (foundEle != NULL) {
+    Set_subtraction(foundEle->production->rhs, production->rhs);
+    if (Set_isEmpty(foundEle->production->rhs)) {
+      Set_remove(set, *foundEle);
+    }
+  }
   return set;
 }
 
@@ -347,7 +353,7 @@ ProductionSet ProductionSetIntersection(ProductionSet left, ProductionSet right)
   SetIterator leftIter = SetIterator_new(left);
   while (SetIterator_hasNext(leftIter)) {
     Production* prod = SetIterator_next(leftIter)->production;
-    if (ProductionSet_has(right, prod)) ProductionSet_remove(left, prod);
+    if (!ProductionSet_has(right, prod)) ProductionSet_remove(left, prod);
   }
   SetIterator_free(leftIter);
   Set_freeNotElements(right);

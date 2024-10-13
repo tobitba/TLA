@@ -65,6 +65,7 @@ void Set_intersection(Set base, Set filter);
 void Set_subtraction(Set minuend, Set subtrahend);
 
 SetElement* Set_find(Set set, SetElement ele);
+bool Set_isEmpty(Set set);
 bool Set_Has(Set set, SetElement ele);
 char* Set_toString(Set set);
 void Set_printInfo(Set set);
@@ -74,5 +75,8 @@ void SetIterator_free(SetIterator iter);
 void Set_freeNotElements(Set set);
 bool SetIterator_hasNext(SetIterator iter);
 SetElement* SetIterator_next(SetIterator iter);
+
+void Set_freeLogger();
+void Set_initializeLogger();
 
 #endif
