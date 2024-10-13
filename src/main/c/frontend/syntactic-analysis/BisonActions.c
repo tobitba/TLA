@@ -234,10 +234,11 @@ ProductionRhsRule* ProductionRhsRuleLambda_new() {
 }
 
 ///////////// Language operations /////////////
-Language* Language_new(Id grammarId) {
+Language* Language_new(Id referenceId, LanguageIdType type) {
   _logSyntacticAnalyzerAction(__FUNCTION__);
   Language* language = safeMalloc(sizeof(Language));
-  language->grammarId = grammarId;
+  language->id = referenceId;
+  language->type = type;
   return language;
 }
 

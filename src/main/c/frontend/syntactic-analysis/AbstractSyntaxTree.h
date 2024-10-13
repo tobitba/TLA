@@ -29,6 +29,8 @@ typedef enum {
   LANG_COMPLEMENT
 } LanguageExpressionType;
 
+typedef enum { GRAMMAR_ID, LANGUAGE_ID } LanguageIdType;
+
 /**
  * This typedefs allows self-referencing types.
  */
@@ -97,7 +99,8 @@ struct LanguageExpression {
 };
 
 struct Language {
-  Id grammarId;
+  LanguageIdType type;
+  Id id;
 };
 
 struct ProductionSetBinding {

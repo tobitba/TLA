@@ -330,7 +330,7 @@ void LanguageExpression_free(LanguageExpression* languageExpression) {
 }
 
 void Language_free(Language* language) {
-  free(language->grammarId.id);
+  free(language->id.id);
   free(language);
 }
 
@@ -355,9 +355,12 @@ char LanguageExpressionType_toString(LanguageExpressionType type) {
 }
 
 char* LanguageExpression_toString(LanguageExpression* languageExpression) {
-  if (languageExpression->type == LANGUAGE)
-    return safeAsprintf("L(" COLORIZE_ID("%s") ")", languageExpression->language->grammarId);
-
+  if (languageExpression->type == LANGUAGE) {
+    if (languageExpression->language->type == GRAMMAR_ID) {
+      return safeAsprintf("L(" COLORIZE_ID("%s") ")", languageExpression->language->id);
+    }
+    return safeAsprintf("(" COLORIZE_ID("%s") ")", languageExpression->language->id);
+  }
   if (languageExpression->type == LANG_COMPLEMENT || languageExpression->type == LANG_REVERSE) {
     char* unaryExpression = LanguageExpression_toString(languageExpression->unaryLanguageExpression);
     char languageExpressionType = LanguageExpressionType_toString(languageExpression->type);
