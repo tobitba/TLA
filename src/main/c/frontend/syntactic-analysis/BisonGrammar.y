@@ -62,6 +62,8 @@
 %token <token> INTERSECTION
 %token <token> SUBTRACTION
 %token <token> CONCAT
+%token <token> COMPLEMENT
+%token <token> LANG_REVERSE_PARENTHESIS_OPEN
 %token <symbol> SYMBOL
 %token <token> L
 %token <token> PARENTHESIS_OPEN
@@ -114,6 +116,7 @@ actually needed.
  * @see https://www.gnu.org/software/bison/manual/html_node/Precedence.html
  */
 %left UNION INTERSECTION SUBTRACTION CONCAT
+%left COMPLEMENT
 
 
 %%
@@ -179,13 +182,15 @@ productionRhsRule: SYMBOL SYMBOL                                { $$ = Productio
   | LAMBDA                                                      { $$ = ProductionRhsRuleLambda_new(); }
   ;
 
-languageBinding: ID[languageID] EQUALS languageExpression[lang]           { $$ = LanguageBinding_new($languageID,$lang); } 
+languageBinding: ID[languageID] EQUALS languageExpression[lang]             { $$ = LanguageBinding_new($languageID, $lang); } 
 
-languageExpression: language                                              { $$ = SimpleLanguageExpression_new($1); }
- | languageExpression[left] UNION languageExpression[right]               { $$ = ComplexLanguageExpression_new($left,$right, LANG_UNION); }
- | languageExpression[left] INTERSECTION languageExpression[right]        { $$ = ComplexLanguageExpression_new($left,$right, LANG_INTERSEC); }
- | languageExpression[left] SUBTRACTION languageExpression[right]         { $$ = ComplexLanguageExpression_new($left,$right, LANG_MINUS); }
- | languageExpression[left] CONCAT languageExpression[right]              { $$ = ComplexLanguageExpression_new($left,$right, LANG_CONCAT); }
+languageExpression: language                                                { $$ = SimpleLanguageExpression_new($1); }
+ | languageExpression[left] UNION languageExpression[right]                 { $$ = ComplexLanguageExpression_new($left, $right, LANG_UNION); }
+ | languageExpression[left] INTERSECTION languageExpression[right]          { $$ = ComplexLanguageExpression_new($left, $right, LANG_INTERSEC); }
+ | languageExpression[left] SUBTRACTION languageExpression[right]           { $$ = ComplexLanguageExpression_new($left, $right, LANG_MINUS); }
+ | languageExpression[left] CONCAT languageExpression[right]                { $$ = ComplexLanguageExpression_new($left, $right, LANG_CONCAT); }
+ | LANG_REVERSE_PARENTHESIS_OPEN languageExpression[lang] PARENTHESIS_CLOSE { $$ = UnaryTypeLanguageExpression_new($lang, LANG_REVERSE); }
+ | COMPLEMENT languageExpression[lang]                                      { $$ = UnaryTypeLanguageExpression_new($lang, LANG_COMPLEMENT); }
  ;
 
 language: L PARENTHESIS_OPEN ID[grammarID] PARENTHESIS_CLOSE              { $$ = Language_new($grammarID); }

@@ -319,8 +319,12 @@ void LanguageExpression_free(LanguageExpression* languageExpression) {
     LanguageExpression_free(languageExpression->leftLanguageExpression);
     LanguageExpression_free(languageExpression->rightLanguageExpression);
     break;
+  case LANG_REVERSE:
+  case LANG_COMPLEMENT:
+    LanguageExpression_free(languageExpression->unaryLanguageExpression);
+    break;
   default:
-    break; // TODO: hay que completar con todos los valores del enum aca.
+    break;
   }
   free(languageExpression);
 }
@@ -341,6 +345,10 @@ char LanguageExpressionType_toString(LanguageExpressionType type) {
     return '.';
   case LANG_MINUS:
     return '-';
+  case LANG_REVERSE:
+    return 'R';
+  case LANG_COMPLEMENT:
+    return 'N';
   default:
     return '?';
   }
@@ -349,6 +357,15 @@ char LanguageExpressionType_toString(LanguageExpressionType type) {
 char* LanguageExpression_toString(LanguageExpression* languageExpression) {
   if (languageExpression->type == LANGUAGE)
     return safeAsprintf("L(" COLORIZE_ID("%s") ")", languageExpression->language->grammarId);
+
+  if (languageExpression->type == LANG_COMPLEMENT || languageExpression->type == LANG_REVERSE) {
+    char* unaryExpression = LanguageExpression_toString(languageExpression->unaryLanguageExpression);
+    char languageExpressionType = LanguageExpressionType_toString(languageExpression->type);
+    char* str = safeAsprintf("%c(%s)", languageExpressionType, unaryExpression);  
+    free(unaryExpression);
+    return str;
+  }
+    
 
   char* leftExpression = LanguageExpression_toString(languageExpression->leftLanguageExpression);
   char* rightExpression = LanguageExpression_toString(languageExpression->rightLanguageExpression);

@@ -249,14 +249,22 @@ LanguageExpression* SimpleLanguageExpression_new(Language* language) {
   return langExpression;
 }
 
+LanguageExpression* UnaryTypeLanguageExpression_new(LanguageExpression* lang, LanguageExpressionType type) {
+  _logSyntacticAnalyzerAction(__func__);
+  LanguageExpression* langExpression = safeMalloc(sizeof(LanguageExpression));
+  langExpression->type = type;
+  langExpression->unaryLanguageExpression = lang;
+  return langExpression;
+}
+
 LanguageExpression* ComplexLanguageExpression_new(
-  LanguageExpression* leftLang, LanguageExpression* rightlang, LanguageExpressionType type
+  LanguageExpression* leftLang, LanguageExpression* rightLang, LanguageExpressionType type
 ) {
   _logSyntacticAnalyzerAction(__FUNCTION__);
   LanguageExpression* langExpression = safeMalloc(sizeof(LanguageExpression));
   langExpression->type = type;
   langExpression->leftLanguageExpression = leftLang;
-  langExpression->rightLanguageExpression = rightlang;
+  langExpression->rightLanguageExpression = rightLang;
   return langExpression;
 }
 

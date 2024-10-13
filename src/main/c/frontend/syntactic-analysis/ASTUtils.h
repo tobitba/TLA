@@ -47,5 +47,7 @@ void LanguageBinding_free(LanguageBinding* languageBinding);
 void LanguageExpression_free(LanguageExpression* languageExpression);
 void Language_free(Language* language);
 char* LanguageBinding_toString(LanguageBinding* languageBinding);
+char* LanguageExpression_toString(LanguageExpression* languageExpression);
+char LanguageExpressionType_toString(LanguageExpressionType type);
 
 #endif
