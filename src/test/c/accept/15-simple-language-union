@@ -1,0 +1,12 @@
+G = < sigma, N, P, S >
+N = { S, A, B }
+P = { S -> b A | c, A -> a }
+sigma = { a, b, c }
+
+G2 = < sigma2, N2, P2, S2 >
+N2 = { S, E, F }
+P2 = { S -> d E | f, E -> e }
+sigma2 = { d, e, f }
+
+T = L(G) u L(G2) n L(G) - L(G2) . L(G)
+T2 = L(G2) - L(G) . L(G2) n L(G2) u L(G) 

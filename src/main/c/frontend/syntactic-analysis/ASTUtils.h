@@ -44,7 +44,7 @@ char* ProductionRhsRule_toStringEle(SetElement ele);
 
 //////////// Languages ////////////
 void LanguageBinding_free(LanguageBinding* languageBinding);
-void LanguegeExpression_free(LanguageExpression* languageExpression);
+void LanguageExpression_free(LanguageExpression* languageExpression);
 void Language_free(Language* language);
 char* LanguageBinding_toString(LanguageBinding* languageBinding);
 

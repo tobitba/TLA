@@ -20,3 +20,5 @@ Checks:                       '*,
 HeaderFilterRegex:            '.*'
 FormatStyle:                  'file'
 WarningsAsErrors:             '*'
+CheckOptions:
+  readability-identifier-length.IgnoredParameterNames: '^([n]|fp)$'

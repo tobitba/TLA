@@ -59,6 +59,9 @@
 %token <token> LAMBDA
 %token <token> PIPE
 %token <token> UNION
+%token <token> INTERSECTION
+%token <token> SUBTRACTION
+%token <token> CONCAT
 %token <symbol> SYMBOL
 %token <token> L
 %token <token> PARENTHESIS_OPEN
@@ -110,7 +113,8 @@ actually needed.
  *
  * @see https://www.gnu.org/software/bison/manual/html_node/Precedence.html
  */
-%left UNION
+%left UNION INTERSECTION SUBTRACTION CONCAT
+
 
 %%
 
@@ -178,7 +182,10 @@ productionRhsRule: SYMBOL SYMBOL                                { $$ = Productio
 languageBinding: ID[languageID] EQUALS languageExpression[lang]           { $$ = LanguageBinding_new($languageID,$lang); } 
 
 languageExpression: language                                              { $$ = SimpleLanguageExpression_new($1); }
- | languageExpression[left] UNION languageExpression[right]               { $$ = ComplexLanguageExpression_new($left,$right,LANG_UNION); }
+ | languageExpression[left] UNION languageExpression[right]               { $$ = ComplexLanguageExpression_new($left,$right, LANG_UNION); }
+ | languageExpression[left] INTERSECTION languageExpression[right]        { $$ = ComplexLanguageExpression_new($left,$right, LANG_INTERSEC); }
+ | languageExpression[left] SUBTRACTION languageExpression[right]         { $$ = ComplexLanguageExpression_new($left,$right, LANG_MINUS); }
+ | languageExpression[left] CONCAT languageExpression[right]              { $$ = ComplexLanguageExpression_new($left,$right, LANG_CONCAT); }
  ;
 
 language: L PARENTHESIS_OPEN ID[grammarID] PARENTHESIS_CLOSE              { $$ = Language_new($grammarID); }
