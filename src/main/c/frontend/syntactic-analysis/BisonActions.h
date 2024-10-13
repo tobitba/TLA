@@ -50,11 +50,11 @@ LanguageBinding* LanguageBinding_new(Id langId, LanguageExpression* langExpressi
 Sentence* LanguageBindingSentence_new(LanguageBinding* languageBinding);
 
 // Set operations
-SymbolSet SymbolSetUnion(SymbolSet left, SymbolSet right);
-SymbolSet SymbolSetIntersection(SymbolSet left, SymbolSet right);
-SymbolSet SymbolSetSubtraction(SymbolSet left, SymbolSet right);
-ProductionSet ProductionSetUnion(ProductionSet left, ProductionSet right);
-ProductionSet ProductionSetIntersection(ProductionSet left, ProductionSet right);
-ProductionSet ProductionSetSubtraction(ProductionSet left, ProductionSet right);
+SymbolSet SymbolSet_union(SymbolSet left, SymbolSet right);
+SymbolSet SymbolSet_intersection(SymbolSet left, SymbolSet right);
+SymbolSet SymbolSet_subtraction(SymbolSet left, SymbolSet right);
+ProductionSet ProductionSet_union(ProductionSet left, ProductionSet right);
+ProductionSet ProductionSet_intersection(ProductionSet left, ProductionSet right);
+ProductionSet ProductionSet_subtraction(ProductionSet left, ProductionSet right);
 
 #endif

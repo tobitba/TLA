@@ -198,7 +198,7 @@ ProductionSet ProductionSet_remove(ProductionSet set, Production* production) {
   return set;
 }
 
-boolean ProductionSet_has(ProductionSet set, Production* production) {
+bool ProductionSet_has(ProductionSet set, Production* production) {
   char* str = Production_toString(production);
   _logSyntacticAnalyzerPushAction(__func__, "Production(%s)", str);
   free(str);
@@ -298,7 +298,7 @@ Sentence* LanguageBindingSentence_new(LanguageBinding* languageBinding) {
 }
 ///////////// Set operations /////////////
 
-SymbolSet SymbolSetUnion(SymbolSet left, SymbolSet right) {
+SymbolSet SymbolSet_union(SymbolSet left, SymbolSet right) {
   char* leftStr = Set_toString(left);
   char* rightStr = Set_toString(right);
   _logSyntacticAnalyzerPushAction(__func__, "SymbolSet(%s) ∪ SymbolSet(%s)", leftStr, rightStr);
@@ -308,7 +308,7 @@ SymbolSet SymbolSetUnion(SymbolSet left, SymbolSet right) {
   return left;
 }
 
-SymbolSet SymbolSetIntersection(SymbolSet left, SymbolSet right) {
+SymbolSet SymbolSet_intersection(SymbolSet left, SymbolSet right) {
   char* leftStr = Set_toString(left);
   char* rightStr = Set_toString(right);
   _logSyntacticAnalyzerPushAction(__func__, "SymbolSet(%s) n SymbolSet(%s)", leftStr, rightStr);
@@ -318,7 +318,7 @@ SymbolSet SymbolSetIntersection(SymbolSet left, SymbolSet right) {
   return left;
 }
 
-SymbolSet SymbolSetSubtraction(SymbolSet left, SymbolSet right) {
+SymbolSet SymbolSet_subtraction(SymbolSet left, SymbolSet right) {
   char* leftStr = Set_toString(left);
   char* rightStr = Set_toString(right);
   _logSyntacticAnalyzerPushAction(__func__, "SymbolSet(%s) - SymbolSet(%s)", leftStr, rightStr);
@@ -328,7 +328,7 @@ SymbolSet SymbolSetSubtraction(SymbolSet left, SymbolSet right) {
   return left;
 }
 
-ProductionSet ProductionSetUnion(ProductionSet left, ProductionSet right) {
+ProductionSet ProductionSet_union(ProductionSet left, ProductionSet right) {
   char* leftStr = Set_toString(left);
   char* rightStr = Set_toString(right);
   _logSyntacticAnalyzerPushAction(__func__, "ProductionSet(%s) ∪ ProductionSet(%s)", leftStr, rightStr);
@@ -344,7 +344,7 @@ ProductionSet ProductionSetUnion(ProductionSet left, ProductionSet right) {
   return left;
 }
 
-ProductionSet ProductionSetIntersection(ProductionSet left, ProductionSet right) {
+ProductionSet ProductionSet_intersection(ProductionSet left, ProductionSet right) {
   char* leftStr = Set_toString(left);
   char* rightStr = Set_toString(right);
   _logSyntacticAnalyzerPushAction(__func__, "ProductionSet(%s) n ProductionSet(%s)", leftStr, rightStr);
@@ -360,7 +360,7 @@ ProductionSet ProductionSetIntersection(ProductionSet left, ProductionSet right)
   return left;
 }
 
-ProductionSet ProductionSetSubtraction(ProductionSet left, ProductionSet right) {
+ProductionSet ProductionSet_subtraction(ProductionSet left, ProductionSet right) {
   char* leftStr = Set_toString(left);
   char* rightStr = Set_toString(right);
   _logSyntacticAnalyzerPushAction(__func__, "ProductionSet(%s) n ProductionSet(%s)", leftStr, rightStr);
