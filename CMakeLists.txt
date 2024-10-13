@@ -78,8 +78,6 @@ add_executable(Compiler
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(LIBBSD REQUIRED libbsd)
-
 include_directories(${LIBBSD_INCLUDE_DIRS})
-
 target_link_libraries(Compiler ${LIBBSD_LIBRARIES})
 # target_link_libraries(Compiler)

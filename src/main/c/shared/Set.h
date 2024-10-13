@@ -40,12 +40,32 @@ void Set_free(Set set);
 bool Set_add(Set set, SetElement ele);
 
 /**
+ * If `ele` is present in `set`, then the node containing `ele` will be freed by this function.
+ *
+ * @return `true` if element was removed, `false` if it was not present to begin with.
+ */
+bool Set_remove(Set set, SetElement ele);
+
+/**
  * @param `dest` Destination array, all elements from `src` will be pushed to `dest`.
  * @param `src` Source array. Will be freed after call to prevent double free errors on the elements.
  */
 void Set_union(Set dest, Set src);
 
+/**
+ * @param 'base' Destination array. Any elements which are not also present in filter will be removed.
+ * @param 'filter' Source array. Will be freed after call to prevent double free errors on the elements.
+ */
+void Set_intersection(Set base, Set filter);
+
+/**
+ * @param 'minuend' Destination array. Any elements present in subtrahend will be removed.
+ * @param 'subtrahend' Source array. Will be freed after call to prevent double free errors on the elements.
+ */
+void Set_subtraction(Set minuend, Set subtrahend);
+
 SetElement* Set_find(Set set, SetElement ele);
+bool Set_isEmpty(Set set);
 bool Set_Has(Set set, SetElement ele);
 char* Set_toString(Set set);
 void Set_printInfo(Set set);
@@ -55,5 +75,8 @@ void SetIterator_free(SetIterator iter);
 void Set_freeNotElements(Set set);
 bool SetIterator_hasNext(SetIterator iter);
 SetElement* SetIterator_next(SetIterator iter);
+
+void Set_freeLogger();
+void Set_initializeLogger();
 
 #endif

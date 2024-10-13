@@ -115,7 +115,9 @@ actually needed.
  *
  * @see https://www.gnu.org/software/bison/manual/html_node/Precedence.html
  */
-%left UNION INTERSECTION SUBTRACTION CONCAT
+%left UNION INTERSECTION
+%left SUBTRACTION
+%left CONCAT
 %left COMPLEMENT
 
 
@@ -153,6 +155,8 @@ symbolSetBinding:
 symbolSet: BRACES_OPEN symbols[values] BRACES_CLOSE             { $$ = $values; }
   | BRACES_OPEN symbols[values] COMMA BRACES_CLOSE              { $$ = $values; }
   | symbolSet[left] UNION symbolSet[right]                      { $$ = SymbolSetUnion($left, $right); }
+  | symbolSet[left] INTERSECTION symbolSet[right]               { $$ = SymbolSetIntersection($left, $right); }
+  | symbolSet[left] SUBTRACTION symbolSet[right]                { $$ = SymbolSetSubtraction($left, $right); }
   ;
 
 symbols: SYMBOL                                                 { $$ = SymbolSet_new($1); }
@@ -165,6 +169,8 @@ productionSetBinding:
 productionSet: BRACES_OPEN productions[values] BRACES_CLOSE     { $$ = $values; }
   | BRACES_OPEN productions[values] COMMA BRACES_CLOSE          { $$ = $values; }
   | productionSet[left] UNION productionSet[right]              { $$ = ProductionSetUnion($left, $right); }
+  | productionSet[left] INTERSECTION productionSet[right]       { $$ = ProductionSetIntersection($left, $right); }
+  | productionSet[left] SUBTRACTION productionSet[right]        { $$ = ProductionSetSubtraction($left, $right); }
   ;
 
 productions: production                                         { $$ = ProductionSet_new($1); }

@@ -8,6 +8,7 @@
 #include "shared/Array.h"
 #include "shared/CompilerState.h"
 #include "shared/Logger.h"
+#include "shared/Set.h"
 #include "shared/Type.h"
 #include <stddef.h>
 #include <stdlib.h>
@@ -26,6 +27,7 @@ int main(const int count, const char** arguments) {
   // initializeCalculatorModule();
   // initializeGeneratorModule();
   Array_initializeLogger();
+  Set_initializeLogger();
   initializeASTUtilsModule();
 
   // Logs the arguments of the application.
@@ -70,6 +72,7 @@ int main(const int count, const char** arguments) {
 
   logDebugging(logger, "Releasing modules resources...");
   Array_freeLogger();
+  Set_freeLogger();
   shutdownASTUtilsModule();
   // shutdownGeneratorModule();
   // shutdownCalculatorModule();
