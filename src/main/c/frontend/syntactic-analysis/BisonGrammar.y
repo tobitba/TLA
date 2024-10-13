@@ -148,9 +148,10 @@ symbolSetBinding:
 
 symbolSet: BRACES_OPEN symbols[values] BRACES_CLOSE             { $$ = $values; }
   | BRACES_OPEN symbols[values] COMMA BRACES_CLOSE              { $$ = $values; }
-  | symbolSet[left] UNION symbolSet[right]                      { $$ = SymbolSet_union($left, $right); }
-  | symbolSet[left] INTERSECTION symbolSet[right]               { $$ = SymbolSet_intersection($left, $right); }
-  | symbolSet[left] SUBTRACTION symbolSet[right]                { $$ = SymbolSet_subtraction($left, $right); }
+  | symbolSet[left] UNION symbolSet[right]                      { $$ = SymbolSetUnion($left, $right); }
+  | symbolSet[left] INTERSECTION symbolSet[right]               { $$ = SymbolSetIntersection($left, $right); }
+  | symbolSet[left] SUBTRACTION symbolSet[right]                { $$ = SymbolSetSubtraction($left, $right); }
+  | PARENTHESIS_OPEN symbolSetSet[sSet] PARENTHESIS_CLOSE       { $$ = $sSet; }
   ;
 
 symbols: SYMBOL                                                 { $$ = SymbolSet_new($1); }
@@ -162,9 +163,10 @@ productionSetBinding:
 
 productionSet: BRACES_OPEN productions[values] BRACES_CLOSE     { $$ = $values; }
   | BRACES_OPEN productions[values] COMMA BRACES_CLOSE          { $$ = $values; }
-  | productionSet[left] UNION productionSet[right]              { $$ = ProductionSet_union($left, $right); }
-  | productionSet[left] INTERSECTION productionSet[right]       { $$ = ProductionSet_intersection($left, $right); }
-  | productionSet[left] SUBTRACTION productionSet[right]        { $$ = ProductionSet_subtraction($left, $right); }
+  | productionSet[left] UNION productionSet[right]              { $$ = ProductionSetUnion($left, $right); }
+  | productionSet[left] INTERSECTION productionSet[right]       { $$ = ProductionSetIntersection($left, $right); }
+  | productionSet[left] SUBTRACTION productionSet[right]        { $$ = ProductionSetSubtraction($left, $right); }
+  | PARENTHESIS_OPEN productionSet[pSet] PARENTHESIS_CLOSE      { $$ = $pSet; }
   ;
 
 productions: production                                         { $$ = ProductionSet_new($1); }
