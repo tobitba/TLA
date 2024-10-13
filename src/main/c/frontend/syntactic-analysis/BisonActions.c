@@ -325,6 +325,7 @@ SymbolSet SymbolSet_subtraction(SymbolSet left, SymbolSet right) {
   free(leftStr);
   free(rightStr);
   Set_subtraction(left, right);
+  Set_free(right);
   return left;
 }
 
@@ -356,7 +357,7 @@ ProductionSet ProductionSet_intersection(ProductionSet left, ProductionSet right
     if (!ProductionSet_has(right, prod)) ProductionSet_remove(left, prod);
   }
   SetIterator_free(leftIter);
-  Set_freeNotElements(right);
+  Set_free(right);
   return left;
 }
 
@@ -372,6 +373,6 @@ ProductionSet ProductionSet_subtraction(ProductionSet left, ProductionSet right)
     ProductionSet_remove(left, prod);
   }
   SetIterator_free(rightIter);
-  Set_freeNotElements(right);
+  Set_free(right);
   return left;
 }
