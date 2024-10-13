@@ -52,11 +52,7 @@ bool Set_remove(Set set, SetElement ele);
  */
 void Set_union(Set dest, Set src);
 
-/**
- * @param `base` Destination set. Any elements which are not also present in filter will be removed.
- * @param `filter` Source set. Will be freed after call to prevent double free errors on the elements.
- */
-void Set_intersection(Set base, Set filter);
+void Set_intersection(Set left, Set right);
 
 /**
  * @param `minuend`

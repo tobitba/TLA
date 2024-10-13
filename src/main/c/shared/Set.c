@@ -173,21 +173,21 @@ void Set_union(Set dest, Set src) {
   free(src);
 }
 
-void Set_intersection(Set base, Set filter) {
-  if (base == NULL) SET_INSTANCE_NULL;
-  if (filter == NULL) {
-    base = NULL;
-    return;
-  }
-  for (int i = 0; i < base->capacity; ++i) {
-    Node* node = base->nodes[i];
+void Set_intersection(Set left, Set right) {
+  if (left == NULL || right == NULL) SET_INSTANCE_NULL;
+  for (int i = 0; i < left->capacity; ++i) {
+    Node* node = left->nodes[i];
     while (node != NULL) {
-      if (!Set_Has(filter, node->element)) Set_remove(base, node->element);
-      node = node->next;
+      if (!Set_Has(right, node->element)) {
+        if (left->freeEleFn != NULL) left->freeEleFn(node->element);
+        Node* prev = node;
+        if (node == left->nodes[i]) left->nodes[i] = node->next;
+        node = node->next;
+        free(prev);
+        left->count--;
+      } else node = node->next;
     }
   }
-  free((void*)filter->nodes);
-  free(filter);
 }
 
 void Set_subtraction(Set minuend, Set subtrahend) {
@@ -313,6 +313,14 @@ Node* Node_new(SetElement ele, uint32_t hash) {
   node->hash = hash;
   return node;
 }
+
+// void removeNode(Set set, Node* node) {
+//   if (set->freeEleFn != NULL) set->freeEleFn(node->element);
+//   Node* prev = node;
+//   node = node->next;
+//   free(prev);
+//   set->count--;
+// }
 
 void Set_initializeLogger() {
   _logger = createLogger("SetLib");

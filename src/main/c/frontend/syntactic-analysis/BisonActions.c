@@ -199,9 +199,6 @@ ProductionSet ProductionSet_remove(ProductionSet set, Production* production) {
 }
 
 bool ProductionSet_has(ProductionSet set, Production* production) {
-  char* str = Production_toString(production);
-  _logSyntacticAnalyzerPushAction(__func__, "Production(%s)", str);
-  free(str);
   SetElement ele = {.production = production};
   return Set_Has(set, ele);
 }
@@ -315,6 +312,7 @@ SymbolSet SymbolSet_intersection(SymbolSet left, SymbolSet right) {
   free(leftStr);
   free(rightStr);
   Set_intersection(left, right);
+  Set_free(right);
   return left;
 }
 
@@ -354,7 +352,10 @@ ProductionSet ProductionSet_intersection(ProductionSet left, ProductionSet right
   SetIterator leftIter = SetIterator_new(left);
   while (SetIterator_hasNext(leftIter)) {
     Production* prod = SetIterator_next(leftIter)->production;
-    if (!ProductionSet_has(right, prod)) ProductionSet_remove(left, prod);
+    if (!ProductionSet_has(right, prod)) {
+      SetElement ele = {.production = prod};
+      Set_remove(left, ele);
+    }
   }
   SetIterator_free(leftIter);
   Set_free(right);
