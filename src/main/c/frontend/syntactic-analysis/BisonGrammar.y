@@ -191,6 +191,7 @@ languageExpression: language                                                { $$
  | languageExpression[left] CONCAT languageExpression[right]                { $$ = ComplexLanguageExpression_new($left, $right, LANG_CONCAT); }
  | LANG_REVERSE_PARENTHESIS_OPEN languageExpression[lang] PARENTHESIS_CLOSE { $$ = UnaryTypeLanguageExpression_new($lang, LANG_REVERSE); }
  | COMPLEMENT languageExpression[lang]                                      { $$ = UnaryTypeLanguageExpression_new($lang, LANG_COMPLEMENT); }
+ | PARENTHESIS_OPEN languageExpression[lang] PARENTHESIS_CLOSE              { $$ = $lang; }
  ;
 
 language: L PARENTHESIS_OPEN ID[grammarID] PARENTHESIS_CLOSE              { $$ = Language_new($grammarID); }
