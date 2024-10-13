@@ -3,5 +3,5 @@ N = { S, A, B }
 P = { S -> b A | c, A -> a }
 sigma = { a, b, c }
 
-T = L(G)
-U = T 
+T = L(sigma) u L(N)
+T1 = L(PINGUINO)
