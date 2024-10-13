@@ -12,9 +12,9 @@ void exitWithPerror(const char* functionName, const char* msg) {
   size_t fullMsgLen = functionNameLen + msgLen + EXTRA_MSG_LEN;
   char fullMsg[fullMsgLen];
   strncpy(fullMsg, "@", fullMsgLen);
-  size_t idx = strlen(strncat(fullMsg + 1, functionName, fullMsgLen));
-  idx = strlen(strncat(fullMsg + idx, " ", fullMsgLen));
-  strncat(fullMsg + idx, msg, fullMsgLen);
+  size_t idx = strlcat(fullMsg + 1, functionName, fullMsgLen);
+  idx = strlcat(fullMsg + idx, " ", fullMsgLen);
+  strlcat(fullMsg + idx, msg, fullMsgLen);
   perror(fullMsg);
   printf("\n-----------------------------   Stack trace   -----------------------------\n\n");
   void* callstack[CALLSTACK_LEN];

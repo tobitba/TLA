@@ -80,7 +80,7 @@ Logger* createLogger(char* name) {
   logger->loggingLevel = _loggingLevelFromString(getStringOrDefault("LOGGING_LEVEL", "INFORMATION"));
   const size_t length = 1 + strlen(name);
   logger->name = safeCalloc(length, sizeof(char));
-  strncpy(logger->name, name, length);
+  strlcpy(logger->name, name, length);
   return logger;
 }
 
