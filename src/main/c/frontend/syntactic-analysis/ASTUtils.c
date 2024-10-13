@@ -361,11 +361,10 @@ char* LanguageExpression_toString(LanguageExpression* languageExpression) {
   if (languageExpression->type == LANG_COMPLEMENT || languageExpression->type == LANG_REVERSE) {
     char* unaryExpression = LanguageExpression_toString(languageExpression->unaryLanguageExpression);
     char languageExpressionType = LanguageExpressionType_toString(languageExpression->type);
-    char* str = safeAsprintf("%c(%s)", languageExpressionType, unaryExpression);  
+    char* str = safeAsprintf("%c(%s)", languageExpressionType, unaryExpression);
     free(unaryExpression);
     return str;
   }
-    
 
   char* leftExpression = LanguageExpression_toString(languageExpression->leftLanguageExpression);
   char* rightExpression = LanguageExpression_toString(languageExpression->rightLanguageExpression);

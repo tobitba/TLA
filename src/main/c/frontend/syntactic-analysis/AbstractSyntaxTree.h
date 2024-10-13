@@ -19,7 +19,15 @@ typedef enum { GRAMMAR_DEFINITION, SYMBOL_SET, PRODUCTION_SET, LANGUAGE_SENTENCE
 
 typedef enum { SYMBOL_SYMBOL_T, SYMBOL_T, LAMBDA_T } ProductionRhsRuleType;
 
-typedef enum { LANGUAGE, LANG_UNION, LANG_INTERSEC, LANG_MINUS, LANG_CONCAT, LANG_REVERSE, LANG_COMPLEMENT } LanguageExpressionType;
+typedef enum {
+  LANGUAGE,
+  LANG_UNION,
+  LANG_INTERSEC,
+  LANG_MINUS,
+  LANG_CONCAT,
+  LANG_REVERSE,
+  LANG_COMPLEMENT
+} LanguageExpressionType;
 
 /**
  * This typedefs allows self-referencing types.
