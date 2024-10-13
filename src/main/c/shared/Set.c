@@ -116,43 +116,22 @@ bool Set_add(Set set, SetElement ele) {
   return true;
 }
 
-Node* recDelete(Node* node, SetElement ele, bool* flag, Set set) {
-  if (node == NULL) return NULL;
-  if (set->equalsEleFn(node->element, ele)) {
-    *flag = true;
-    Node* aux = node->next;
-    char* eleStr = set->toStringEleFn(node->element);
-    logDebugging(_logger, "Deleting element: %s", eleStr);
-    free(eleStr);
-    if (set->freeEleFn != NULL) {
-      set->freeEleFn(node->element);
-    }
-    // free(node);
-    return aux;
-  }
-  node->next = recDelete(node->next, ele, flag, set);
-  return node;
-}
-
 bool Set_remove(Set set, SetElement ele) {
   if (set == NULL) SET_INSTANCE_NULL;
-  bool removalFlag = false;
   uint32_t idx;
-  hashIdx(set, ele, &idx);
-  logDebugging(_logger, "Attempting to remove element from set.");
-  char* setStr = Set_toString(set);
-  char* eleStr = set->toStringEleFn(ele);
-  logDebugging(_logger, "Set: %s, Element: %s", setStr, eleStr);
-  free(setStr);
-  free(eleStr);
-  if (set->nodes[idx] != NULL) {
-    set->nodes[idx] = recDelete(set->nodes[idx], ele, &removalFlag, set);
+  uint32_t hash = hashIdx(set, ele, &idx);
+  Node* node = set->nodes[idx];
+  while (node != NULL) {
+    if (node->hash == hash && set->equalsEleFn(node->element, ele)) {
+      set->nodes[idx] = node->next;
+      if (set->freeEleFn != NULL) set->freeEleFn(node->element);
+      free(node);
+      set->count--;
+      return true;
+    }
+    node = node->next;
   }
-  if (removalFlag) {
-    set->count--;
-  }
-  Set_printInfo(set);
-  return removalFlag;
+  return false;
 }
 
 bool Set_isEmpty(Set set) {
@@ -165,9 +144,7 @@ SetElement* Set_find(Set set, SetElement ele) {
   uint32_t hash = hashIdx(set, ele, &idx);
   Node* node = set->nodes[idx];
   while (node != NULL) {
-    if (node->hash == hash) {
-      if (set->equalsEleFn(node->element, ele)) return &node->element;
-    }
+    if (node->hash == hash && set->equalsEleFn(node->element, ele)) return &node->element;
     node = node->next;
   }
   return NULL;
@@ -216,9 +193,6 @@ void Set_intersection(Set base, Set filter) {
 void Set_subtraction(Set minuend, Set subtrahend) {
   if (minuend == NULL) SET_INSTANCE_NULL;
   if (subtrahend == NULL) return;
-  char* min = Set_toString(minuend);
-  char* sub = Set_toString(subtrahend);
-  logError(_logger, "min: %s, sub: %s", min, sub);
   for (int i = 0; i < subtrahend->capacity; ++i) {
     Node* node = subtrahend->nodes[i];
     while (node != NULL) {
