@@ -1,0 +1,4 @@
+G = < sigma, N, P, S >
+N = { S, A, B }
+P = ({ S -> a } u ({ S -> f A | g} n {S -> g})) - { S -> a}
+sigma = { a, b, c, d, e, f, g } - ({a,b,c} - {a} u {d})
