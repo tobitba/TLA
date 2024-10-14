@@ -44,6 +44,10 @@ symbol_r [^[:space:],{}]+
 "u"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), UNION); }
 "n"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), INTERSECTION); }
 "-"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), SUBTRACTION); }
+"."                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), CONCAT); }
+"¬"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), COMPLEMENT); }
+"LR"[[:space:]]*"("                               { return TokenLexemeAction(createLexicalAnalyzerContext(), LANG_REVERSE_PARENTHESIS_OPEN); }
+")"                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), PARENTHESIS_CLOSE); }
 {id_r}                              { return IdLexemeAction(createLexicalAnalyzerContext()); }
 "("                                 { return TokenLexemeAction(createLexicalAnalyzerContext(), PARENTHESIS_OPEN); }
 

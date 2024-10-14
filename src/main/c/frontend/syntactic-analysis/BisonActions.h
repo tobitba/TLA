@@ -42,10 +42,11 @@ ProductionRhsRule* ProductionRhsRuleSymbolSymbol_new(Symbol leftSymbol, Symbol r
 ProductionRhsRule* ProductionRhsRuleSymbol_new(Symbol symbol);
 ProductionRhsRule* ProductionRhsRuleLambda_new();
 
-Language* Language_new(Id grammarId);
+Language* Language_new(Id referenceId, LanguageIdType type);
 LanguageExpression* SimpleLanguageExpression_new(Language* language);
+LanguageExpression* UnaryTypeLanguageExpression_new(LanguageExpression* lang, LanguageExpressionType type);
 LanguageExpression*
-ComplexLanguageExpression_new(LanguageExpression* leftLang, LanguageExpression* rightlang, LanguageExpressionType type);
+ComplexLanguageExpression_new(LanguageExpression* leftLang, LanguageExpression* rightLang, LanguageExpressionType type);
 LanguageBinding* LanguageBinding_new(Id langId, LanguageExpression* langExpression);
 Sentence* LanguageBindingSentence_new(LanguageBinding* languageBinding);
 
