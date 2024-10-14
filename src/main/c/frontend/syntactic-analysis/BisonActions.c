@@ -351,10 +351,14 @@ ProductionSet ProductionSet_intersection(ProductionSet left, ProductionSet right
   free(rightStr);
   SetIterator leftIter = SetIterator_new(left);
   while (SetIterator_hasNext(leftIter)) {
-    Production* prod = SetIterator_next(leftIter)->production;
-    if (!ProductionSet_has(right, prod)) {
-      SetElement ele = {.production = prod};
+    Production* leftProd = SetIterator_next(leftIter)->production;
+    SetElement ele = {.production = leftProd};
+    SetElement* foundEle = Set_find(right, ele);
+    if (foundEle == NULL) {
+      SetElement ele = {.production = leftProd};
       Set_remove(left, ele);
+    } else {
+      Set_intersection(leftProd->rhs, foundEle->production->rhs);
     }
   }
   SetIterator_free(leftIter);
