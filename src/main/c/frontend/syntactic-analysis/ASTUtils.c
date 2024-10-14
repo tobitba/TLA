@@ -201,7 +201,9 @@ bool ProductionRhsRule_equalsEle(SetElement ele1, SetElement ele2) {
 }
 
 void ProductionRhsRule_free(ProductionRhsRule* rule) {
-  logDebugging(_logger, "Executing destructor: %s", __func__);
+  char* str = ProductionRhsRule_toString(rule);
+  logDebugging(_logger, "Executing destructor: %s(%s)", __func__, str);
+  free(str);
   switch (rule->type) {
   case SYMBOL_SYMBOL_T:
     free(rule->leftSymbol.symbol);
