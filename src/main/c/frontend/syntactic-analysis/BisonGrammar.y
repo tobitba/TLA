@@ -202,8 +202,8 @@ languageExpression: language                                                { $$
  | PARENTHESIS_OPEN languageExpression[lang] PARENTHESIS_CLOSE              { $$ = $lang; }
  ;
 
-language: L PARENTHESIS_OPEN ID[grammarID] PARENTHESIS_CLOSE              { $$ = Language_new($grammarID, GRAMMAR_ID); }
- | ID[id]                                                                 { $$ = Language_new($id, LANGUAGE_ID); }
+language: L PARENTHESIS_OPEN ID[grammarID] PARENTHESIS_CLOSE                { $$ = Language_new($grammarID, GRAMMAR_ID); }
+ | ID[id]                                                                   { $$ = Language_new($id, LANGUAGE_ID); }
  ;
  
 %%
